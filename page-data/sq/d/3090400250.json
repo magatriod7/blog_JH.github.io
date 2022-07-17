@@ -1,0 +1,1 @@
+{"data":{"minimalBlogConfig":{"basePath":"/","blogPath":"/blog","postsPath":"content/posts","pagesPath":"content/pages","tagsPath":"/tags","externalLinks":[{"name":"Homepage","url":"https://www.lekoarts.de?utm_source=minimal-blog&utm_medium=Starter"}],"navigation":[{"title":"게시글","slug":"/blog"},{"title":"About","slug":"/about"}],"showLineNumbers":true,"showCopyButton":true}}}
