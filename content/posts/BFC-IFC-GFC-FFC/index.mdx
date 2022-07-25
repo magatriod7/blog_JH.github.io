@@ -11,6 +11,7 @@ tags:
 
 Formatting Contexts의 줄임말로 CSS에서 contexts의 배치를 어떻게할지를 말한다. 각 요소들이 서로간의 상호작용을 어떻게해서 위치가 정해지는지에 대한 규칙을 따르는 공간에서의 렌더링을 뜻한다.
 
+
 ### BFC
 
 Block Formatting Contexts를 뜻한다. BFC는 보통 독립된 렌더링 구역이다. 하위 요소들은 컨테이너  밖 요소에 영향을 주지 않고 받지도 않는다.
@@ -33,6 +34,12 @@ IFC의 라인박스는 IFC의 좌우 양 끝과 거의 같으나 float 속성에
 
 블록레벨의 요소는 IFC 내부에 들어있을 수 없다. 만약 블록 요소가 삽입되면 block-level로 표현된다.
 
+---
+
+BFC와 IFC는 Normal Flow의 Formatting 방식입니다.
+
+---
+
 ### GFC
 
 GridLayout Formatting Contexts, display가 grid로 설정되면 GFC를 가지게 된다. Grid의 행과 열을 제어하고 정렬하는 효과를 가진다.
@@ -43,7 +50,6 @@ Flex formmatting Contexts, display가 flex 혹은 inline-flex 적용될 경우�
 
 ---
 
-FFC, GFC 추가 예정
 
 [참조1](https://mingeesuh.tistory.com/entry/Block-Formatting-Context-BFC)
 
