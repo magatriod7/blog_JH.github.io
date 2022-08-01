@@ -3,22 +3,22 @@ title: http api vs restful api
 date: 2022-07-29
 description: http api vs restful api
 tags:
-  - restful-api
+  - network
+  - browser
 ---
 
-HTTP API
+##HTTP API
 
 HTTP 통신은 URL을 통해 HTML과 같은 정보를 주고받는 일종의 통신 규약이다. 흔히 웹페이지에 대한 정보를 주고 받는데 주로 쓰인다.
 
-!(restful)[./restful.png]
+![restful](./restful.png)
+
 
 깊이 들어가면 네트워크에 대해서 들어가야하기 때문에 이 부분은 추후 설명하고 이번에는 간단하게 하고 넘어갈 예정이다.
 
+URI - <span style='background-color:#fff5b1 '>프로토콜</span> + <span style='background-color:#ffdce0 '>도메인</span> + <span style=' background-color:#F7DDBE'>uri</span> 
 
-
-URI - <span style='background-color:#fff5b1'>프로토콜</span> + <span style='background-color:#ffdce0'>도메인</span> + <span style='background-color:#F7DDBE'>uri</span> 
-
-ex)<span style='background-color:#fff5b1'>https:</span>//<span style='background-color:#ffdce0'>github.com</span>/<span style='background-color:#F7DDBE'>posth2071/repository</span> 
+ex)<span style='background-color:#fff5b1 '>https:</span>//<span style='background-color:#ffdce0 '>github.com</span>/<span style=' background-color:#F7DDBE'>posth2071/repository</span> 
 
 HTTP 통신은 크게 line, header, body로 이루어져 있다. 
 
@@ -28,12 +28,12 @@ Header에는 body의 데이터 타입, 클라이언트 정보 등이 들어가 �
 
 body는 통신을 통해 얻을 data에 대한 정보를 주로 가지고 있다.
 
-!(restful)[./restful1.png]
+![restful1](./restful1.png)
+
+![restful2](./restful2.png)
 
 
-!(restful)[./restful2.png]
-
-REST API
+##REST API
 
 위의 http의 line에서 요청방식을 method라고도 부르는데
 http API상에서 method을 따라 서버와 통신을 하면서 데이터를 관리하는 것을
