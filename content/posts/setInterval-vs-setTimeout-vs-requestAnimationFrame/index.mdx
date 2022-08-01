@@ -42,6 +42,30 @@ setTimeout은 일정 시간 마다 반복 사용할 함수
 requestAnimationFrame은 매 프레임마다 실행해야하는 함수
 로 각각의 사용처라 다릅니다.
 
+
+---
+
+### requestAnimationFrame의 장점 추가 2022-07-31
+
+requestAnimationFrame은 브라우저가 비활성 상태(다른 탭을 키는 행위 등)을 하면 화면에 렌더링을 할 필요가 없어지므로 requestAnimationFrame이 실행되지 않는다.
+반면 setInterval은 비활성 상태일 때도 코드가 반복적으로 돌아가는 차이가 있다.
+
+여기서 2가지의 장점을 requestAnimationFrame이 가져갈 수 있는데
+
+1. 움직이던 애니매이션이 보던 부분에서 다시 시작된다.
+
+2. 비활성 상태에서 실행되지 않으므로 리소스를 적게 잡아먹는다.
+
+등이 있다.
+
+~~~
+https://codesandbox.io/s/requestanimationframe-forked-5ho0p4?file=/index.html
+~~~
+
+
+
 ---
 
 [참조1](https://javascript.plainenglish.io/better-understanding-of-timers-in-javascript-settimeout-vs-requestanimationframe-bf7f99b9ff9b)
+
+[참조2](https://velog.io/@0715yk/HTML-requestAnimationFrame)
