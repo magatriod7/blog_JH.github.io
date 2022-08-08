@@ -1,0 +1,46 @@
+---
+title: let vs const vs var
+date: 2022-07-29
+description: let vs const vs var
+  - JS
+---
+
+변수와 상수를 선언하는 방법은 크게 3가지로 let, var, const가 있습니다. 각 차이첨을 살펴보겠습니다.
+
+```
+console.log(x) // undefined
+var x = 1
+console.log(x) // 1
+```
+
+```
+console.log(x) // Uncaught ReferenceError : Cannot access 'x' before initialization
+let x = 1
+```
+
+```
+console.log(x) // Uncaught ReferenceError : Cannot access 'x' before initialization
+const x = 1
+```
+
+변수가 초기화된 후에 1이 나오는 것은 알겠지만 var은 undefined가 나오는데 let과 const는 왜 변수 선언 자체가 안됐다는 에러가 나올까요?
+
+이것은 함수 호이스팅 때문입니다.
+
+### 호이스팅(hoisting)
+
+호이스팅은 변수와 함수의 메모리 공간을 선언 전 미리 할당하는 것을 이야기 합니다. 쉽게 말하면 자바스크립트가 작동하기 전에 변수나 함수가 있다는 것을 알려주는 것이지요.
+
+var, let, const, function, class는 모두 호이스팅이 일어납니다.
+
+var의 경우 var의 정보가 존재한다고 미리 알려주고 var이 있기는 한데 뭔지는 모르겠어라서
+JS에서 undefined 처리를 한 것이지만
+
+let과 const도 호이스팅이 일어나는데 undefined로 default가 정혀져 있지 않습니다. 이는 let과 const의 성질상 초기화하기 전에 읽거나 쓰게 되면 ReferenceError가 생성되는 성질을 가지고 있기 때문입니다.
+
+```
+let 변수는 초기화하기 전에는 읽거나 쓸 수 없습니다. 초기화 전에 접근을 시도하면 ReferenceError가 발생합니다. 변수 스코프의 맨 위에서 변수의 초기화 완료 시점까지의 변수는 "시간상 사각지대"(Temporal Dead Zone, TDZ)에 들어간 변수라고 표현합니다. - mozilla
+```
+
+
+---

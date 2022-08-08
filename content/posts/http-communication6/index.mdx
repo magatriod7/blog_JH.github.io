@@ -1,0 +1,327 @@
+---
+title: http 통신 정리 6 - HTTP 헤더
+date: 2022-08-06
+description: HTTP 상태 코드
+  - network
+  - http 통신 정리
+---
+
+## 시작
+
+HTTP 헤더에는 메시지 바디의 내용, 메시지 바디의 크기, 압축, 인증, 요청 클라이언트, 서버 정보, 캐
+시 관리 정보 등 많은 데이터가 들어갈 수 있습니다. 이제 이 부분에 대해서 다뤄보겠습니다.
+
+## 표현 헤더
+
+### Content-Type
+
+표현 데이터의 형식 설명
+
+미디어 타입, 문자 인코딩
+
+예)
+
+text/html; charset=utf-8
+
+application/json
+
+image/png
+
+### Content-Encoding
+
+표현 데이터를 압축하기 위해 사용
+
+데이터를 전달하는 곳에서 압축 후 인코딩 헤더 추가
+
+데이터를 읽는 쪽에서 인코딩 헤더의 정보로 압축 해제
+
+예)
+
+gzip
+
+deflate
+
+identity - 압축 안함
+
+
+### 표현 데이터의 자연 언어를 표현
+
+예)
+
+ko
+
+en
+
+en-US
+
+### Content-Length
+
+바이트 단위
+
+Transfer-Encoding(전송 코딩)을 사용하면 Content-Length를 사용하면 안됩니다.
+
+## 협상 헤더
+
+클라이언트가 선호하는 표현 요청입니다.
+
+Accept: 클라이언트가 선호하는 미디어 타입 전달
+
+Accept-Charset: 클라이언트가 선호하는 문자 인코딩
+
+Accept-Encoding: 클라이언트가 선호하는 압축 인코딩
+
+Accept-Language: 클라이언트가 선호하는 자연 언어
+
+### 협상과 우선순위1
+
+0~1의 값을 가지며 클수록 우선 순위를 가집니다.
+
+Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+
+헤더를 가지게 된다면 ko > en-US > en 순으로 부합하는 데이터를 줄 것입니다.
+
+### 협상과 우선순위2
+
+구체적인 것을 우선시합니다.
+
+Accept: text/*, text/plain, text/plain;format=flowed, */*
+
+1. text/plain;format=flowed
+
+2. text/plain
+
+3. text/*
+
+4. */*
+
+1번의 정보가 제일 정확하기 때문에 위의 순서대로 리소스를 확인후 부합하는 리소스가 있으면 그에 대한 응답을 줄 것입니다.
+
+## 전송 방식
+
+전송에는 크게 4가지 방법이 있습니다.
+
+### 1. 단순 전송
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/html;charset=UTF-8
+Content-Length: 3423
+
+<html>
+ <body>...</body>
+</html>
+```
+
+압축하지 않은 순수 값을 전송합니다.
+
+
+### 2. 압축 전송
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/html;charset=UTF-8
+Content-Encoding: gzip
+Content-Length: 521
+
+lkj123kljoiasudlkjaweioluywlnfdo912u34ljko98udjkl
+```
+
+압축된 응답을 전송합니다. 응답 방식이 헤더에 포함되어 있고 압축된 리소스가 바디에 포함되어 있습니다.
+
+### 3. 분할 전송
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Transfer-Encoding: chunked
+
+5
+Hello
+5
+World
+0
+\r\n
+```
+
+리소스를 분할해서 응답합니다. 이 경우 각 분할된 리소스 앞에 리소스의 크기가 적혀있기 때문에 HTTP 헤더에 리소스 크기를 적으면 안됩니다.
+
+### 4. 범위 전송
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Content-Range: bytes 1001-2000 / 2000
+
+qweqwe1l2iu3019u2oehj1987askjh3q98y
+```
+
+특정 범위에 대한 값이 전송됩니다.
+
+
+## 일반 정보
+
+### From: 유저 에이전트의 이메일 정보
+
+### Referer: 이전 웹 페이지 주소
+
+현재 요청된 페이지의 이전 웹 페이지 주소입니다. Referer을 이용해서 유입 경로를 분석할 수 있습니다.
+
+### User-Agent: 유저 에이전트 애플리케이션 정보
+
+클라이언트의 애플리케이션 정보 등을 담고 있습니다. 어떤 종류의 브라우저에서 장애가 발생하는지 파악이 가능합니다.
+
+### Server: 요청을 처리하는 오리진 서버의 소프트웨어 정보
+
+### Date: 메시지가 생성된 날짜
+
+## 특별한 정보
+
+### Host: 요청한 호스트 정보(도메인)
+
+```
+GET /search?q=hello&hl=ko HTTP/1.1
+Host: www.google.com
+```
+
+요청에서 사용
+
+필수
+
+하나의 서버가 여러 도메인을 처리해야 할 때
+
+하나의 IP 주소에 여러 도메인이 적용되어 있을 때
+
+예를 들어 한 서버가 3개의 도메인을 서비스하고 있다고 가정합시다. aaa.com을 원하는 클라이언트에게는 aaa.com의 리소스를, bbb.com을 원하는 클라이언트에게는 bbb.com의 리소스를 주는 등, 클라이언트가 원하는 도메인에 대한 응답을 해줄 수 있습니다.
+
+### Location: 페이지 리다이렉션
+
+웹 브라우저는 3xx 응답의 결과에 Location 헤더가 있으면, Location 위치로 자동 이동합니다. 해당 설명은 전의 3xx 응답에서 했습니다.
+
+201 (Created): Location 값은 요청에 의해 생성된 리소스 URI입니다. 즉, 게시판에 글을 쓴 경우 게시판으로 자동적으로 이동되는 경우를 말합니다.
+
+3xx (Redirection): 3xx에서 Location 값은 요청을 자동으로 리다이렉션하기 위한 대상 리소스를 가리킵니다
+
+### Allow: 허용 가능한 HTTP 메서드
+
+405 (Method Not Allowed)의 응답을 할 경우 어떤 요청이 가능한지 알려줍니다.
+
+Allow: GET, HEAD, PUT
+
+### Retry-After: 유저 에이전트가 다음 요청을 하기까지 기다려야 하는 시간
+
+503 (Service Unavailable): 서버가 문제가 생기더라도 서비스가 언제부터 다시 이용가능한지 알려줄 수도 있습니다.
+
+### 인증 Authorization
+
+클라이언트 인증 정보를 서버에 전달하는 헤더입니다.
+
+예) Authorization: Basic xxxxxxxxxxxxxxxx
+
+### WWW-Authenticate
+
+리소스에 접근이 실패할 경우 접근을 하기 위해서 필요한 인증 방법을 게시합니다. 401 응답과 함께 사용할 수 있습니다.
+
+```
+WWW-Authenticate: Newauth realm="apps", type=1,
+ title="Login to \"apps\"", Basic realm="simple"
+```
+
+## 쿠키
+
+Set-Cookie: 서버에서 클라리언트로 쿠키를 전달합니다.
+
+Cookie: 클라이언트가 서버에서 받은 쿠키를 저장하고 HTTP 요청시 서버로 전달합니다.
+
+쿠키는 이전에 사용했던 정보를 클라이언트의 PC에 저장하는 것입니다.
+
+모두 아무 홈페이지에서나 로그인을 해본 적이 있을겁니다. 로그인을 할 경우 안녕하세요 홍길동님! 과 같은 메세지가 저장되는 경우도 있었을 겁니다.
+
+여기서 홍길동님!을 정하는 부분이 매번 서버에 요청할 때마다 저희의 정보를 HTTP 헤더에 포함시켜 전송시켜 홍길동님!이 나타나는 리소스를 받아오는 것은 매우 비효율적일 것입니다.
+
+이런 문제를 해결하기 위해서 사용되는것이 쿠키로 정보를 각 클라이언트의 브라우저에 쿠키로 저장하여 사용할 수 있습니다.
+
+대표적인 예시로 로그인 일주일간 로그인 유지, 이 창 일주일 동안 보지 않기 등이 있습니다.
+
+### Set-Cookie
+
+Set-Cookie: expires=Sat, 26-Dec-2020 04:39:21 GMT
+
+Set-Cookie: max-age=3600 (3600초)
+
+Set 쿠키를 이용하여 쿠키의 유효 시간을 정할 수도 있습니다.
+
+세션쿠키: 만료 날짜를 생략하면 브라우저 종료시 까지만 유지합니다.
+
+영속쿠키: 만료 날짜를 입력하면 해당 날짜까지 유지합니다.
+
+### 쿠키 - 도메인
+
+Domain
+
+예) domain=example.org
+
+명시: 명시한 문서 기준 도메인 + 서브 도메인 포함
+
+domain=example.org를 지정해서 쿠키 생성
+
+example.org는 물론이고
+
+dev.example.org도 쿠키 접근
+
+생략: 현재 문서 기준 도메인만 적용
+
+example.org 에서 쿠키를 생성하고 domain 지정을 생략
+
+example.org 에서만 쿠키 접근
+
+dev.example.org는 쿠키 미접근
+
+###쿠키 - 경로
+
+Path
+
+예) path=/home
+
+이 경로를 포함한 하위 경로 페이지만 쿠키 접근
+
+일반적으로 path=/ 루트로 지정
+
+예)
+
+path=/home 지정
+
+/home -> 가능
+
+/home/level1 -> 가능
+
+/home/level1/level2 -> 가능
+
+/hello -> 불가능
+
+###쿠키 - 보안
+
+Secure, HttpOnly, SameSite
+
+Secure
+
+쿠키는 http, https를 구분하지 않고 전송
+
+Secure를 적용하면 https인 경우에만 전송
+
+HttpOnly
+
+XSS 공격 방지
+
+자바스크립트에서 접근 불가(document.cookie)
+
+HTTP 전송에만 사용
+
+SameSite
+
+XSRF 공격 방지
+
+요청 도메인과 쿠키에 설정된 도메인이 같은 경우만 쿠키 전송
+
+---
+
+---
