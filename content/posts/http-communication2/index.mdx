@@ -31,17 +31,50 @@ URL의 대표적인 예시를 하나 두겠습니다. 구글에 hello를 검색�
 https://www.google.com:443/search?q=hello[#fragment]
 ```
 
-#### 프로토콜 - scheme - https
+### 프로토콜 - scheme - https
 
-#### 호스트명 - host - www.google.com
+<span style="font-weight:bold; color:black; background-color:#d3d3d3;">https://</span>
+<span>www.google.com</span>
+<span>:443</span>
+<span>/search</span>
+<span>?q=hello</span>
+<span>[#fragment]</span>
+
+현재 접속 시도중인 통신의 종류를 말합니다. http, ftp, https 등이 대표적입니다.
+
+### 호스트명 - host - www.google.com
+
+
+<span >https://</span>
+<span style="font-weight:bold; color:black; background-color:#d3d3d3;">www.google.com</span>
+<span>:443</span>
+<span>/search</span>
+<span>?q=hello</span>
+<span>[#fragment]</span>
 
 호스트명을 말합니다. 도메인 혹은 IP 주소를 적습니다.
 
-#### 포트번호 - port - 443
+### 포트번호 - port - 443
 
-접속하고 있는 포트입니다. https 통신이므로 443으로 보통 브라우저에서는 생략되어 있습니다.
 
-#### 패스 - path - search
+<span >https://</span>
+<span >www.google.com</span>
+<span style="font-weight:bold; color:black; background-color:#d3d3d3;">:443</span>
+<span>/search</span>
+<span>?q=hello</span>
+<span>[#fragment]</span>
+
+접속하고 있는 포트입니다. http 통신이면 80, https 통신이면 443으로 보통 브라우저에서는 생략되어 있습니다.
+
+### 패스 - path - search
+
+
+<span >https://</span>
+<span >www.google.com</span>
+<span>:443</span>
+<span style="font-weight:bold; color:black; background-color:#d3d3d3;">/search</span>
+<span>?q=hello</span>
+<span>[#fragment]</span>
 
 리소스의 계층적 구조로
 
@@ -51,7 +84,14 @@ https://www.google.com:443/search?q=hello[#fragment]
 
 등 큰 개념에서 작은 개념으로 들어가는 편입니다.
 
-#### 쿼리 파라미터 - query - (?q=hello)
+### 쿼리 파라미터 - query - (?q=hello)
+
+<span >https://</span>
+<span >www.google.com</span>
+<span>:443</span>
+<span>/search</span>
+<span style="font-weight:bold; color:black; background-color:#d3d3d3;">?q=hello</span>
+<span>[#fragment]</span>
 
 key=value 형태를 가지고 있습니다.
 
@@ -62,11 +102,22 @@ q=hello&t=turtle
 이는 query parameter 혹은 query string으로도 불리는데 서버에 제공될 때 문자 형으로 제공됩니다.
 위의 예시에서 q와 t는 임의로 정할 수 있으며 각 값을 받은 서버는 이를 통해 정보를 제공할 것입니다.
 
-#### fragment
+### fragment
+
+<span >https://</span>
+<span >www.google.com</span>
+<span>:443</span>
+<span>/search</span>
+<span>?q=hello</span>
+<span style="font-weight:bold; color:black; background-color:#d3d3d3;">[#fragment]</span>
 
 fragment는 html 내부 북마크 등에 이용하며 서버에 전송하는 정보는 아닙니다.
 
-각 부분을 파해쳐보면 위와 같이 나뉩니다. 그 외 userinfo이 있지만 잘 사용하지는 않습니다.
+---
+
+그 외 userinfo이 있지만 잘 사용하지는 않습니다.
+
+---
 
 브라우저에서 해당 도메인에 접속을 요청하게 되면 전에 설명한 패킷 안의 HTTP 전송 메시지에 
 
@@ -78,3 +129,7 @@ Host: www.google.com
 와 같이 정보가 포함되어 서버에 데이터를 요청하면 서버는 형식에 맞춰 데이터를 전송하게 됩니다.
 
 ---
+
+
+
+[참고1](https://www.inflearn.com/course/http-%EC%9B%B9-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC/dashboard)

@@ -1,0 +1,53 @@
+---
+title: 자바스크립트 자료구조 Set
+date: 2022-08-14
+description: SET
+tags:
+  - JS
+---
+
+## SET
+
+Set는 array와 매우 비슷한 구조를 가지고 있지만 각 값들이 중복되지 않는 성질을 가지고 있습니다.
+
+```
+var mySet = new Set();
+var myArray = []
+
+var object1 = {"test":1}
+
+mySet.add(1); // Set { 1 }
+mySet.add(5); // Set { 1, 5 }
+mySet.add(5); // Set { 1, 5 }
+mySet.add('some text'); // Set { 1, 5, 'some text' }
+mySet.add(object1); // Set { 1, 5 }
+mySet.add(object1); // Set { 1, 5 }
+
+myArray.push(1); // Set { 1 }
+myArray.push(5); // Set { 1, 5 }
+myArray.push(5); // Set { 1, 5 }
+myArray.push('some text'); // Set { 1, 5, 'some text' }
+myArray.push(object1); // Set { 1, 5 }
+myArray.push(object1); // Set { 1, 5 }
+
+for (let item of mySet) console.log(item);
+//1
+//5
+//"some text"
+//Object { test: 1 }
+
+for (let item of myArray) console.log(item);
+// 1
+// 5
+// 5
+// "some text"
+// Object { test: 1 }
+// Object { test: 1 }
+
+```
+
+전체적인 값이 무엇이 있는지 확인하는데 사용할 수 있습니다.
+
+---
+
+[참고](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Set)

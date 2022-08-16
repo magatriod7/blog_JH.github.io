@@ -13,30 +13,30 @@ tags:
 
 앞서 설명했던 CRP를 간략하게 정리하면서 브라우저 렌더링을 최소화하는 방법을 이야기 합시다.
 
-#  
 
 ![CRP](./CRP1.png)
 
-### 렌더링 과정 순서
-1.DOM, CSSOM 생성
+## 렌더링 과정 순서
+
+#### 1.DOM, CSSOM 생성
 
 HTML의 기본 정보와 JS를 통해 추가 혹은 변경된 HTML의 노드를 이용하여 DOM을 만들고 css정보를 이용하여 CSSOM을 만든다.
 
-2.Render tree 생성
+#### 2.Render tree 생성
 
 DOM과 CSSOM를 이용하여 각 노드에 어떤 css를 적용할지 정한다.
 
-3.layout 생성
+#### 3.layout 생성
 
 요소들이 페이지에서 배치되는 위치, 방법, 각 요소의 너비, 높이, 서로 관련된 위치를 결정한다.
 
-4.paint 적용 
+#### 4.paint 적용 
 
 배치된 노드들에 색상을 칠한다.
 
-5.Composit
+#### 5.Composit
 
-여러 Layer로 나눠진 픽셀들을 최종적으로 우리가 볼 수 있도록 병합한다. 기존의 layout과 paint와는 달리 GPU를 이용하여 더 빠르게 진행될 수 있다.
+여러 Layer로 나눠진 픽셀들을 최종적으로 우리가 볼 수 있도록 병합한다. 기존의 layout과 paint와는 달리 GPU를 이용하여 더 빠르게 진행될 수 있습니다.
 
 
 #  
@@ -48,23 +48,29 @@ DOM과 CSSOM를 이용하여 각 노드에 어떤 css를 적용할지 정한다.
 이 때 CSS나 HTML의 노드가 변경되어 Layout의 속성이 변경되게 된다면 이를 reflow라고 합니다.
 반면 CSS가 변경되었음에도 Layout이 변경되지 않고 색상만 병경되어 Paint만 일어나는 경우를 repaint라고 합니다.
 
+![CRP](./CRP1.png)
+
 reflow 과정 순서
 JS -> DOM, CSSOM 재생성 -> layout 재생성 -> paint -> Composite 과정을 가집니다.
 position, width, height, left, top, border, margin, padding, text-align 등 위치와 크기를 정하는 경우 이에 속합니다.
 
 노드의 구체적인 수치를 알아와야하는 경우 Layout 생성이 되어야 그 정확한 수치를 알 수 있기 때문에 호출할 때마다 reflow가 일어나는 강제 동기 레이아웃이 일어난다. 호출이 필요한 경우 최소한으로 사용하여 재활용하는 방식으로 이용할 필요가 있다. 그러지 않으면 호출이 너무 많아져 레이아웃 스레싱이 일어나게 되어 브라우저 렌더링에 장애를 가지게 됩니다.
 
+![CRP](./CRP2.png)
+
 repaint 과정 순서
+
 JS -> DOM, CSSOM 재생성 -> paint -> Composit 의 과정으로 reflow보다는 간단한 가정을 거칩니다.
 background, box-shadow, color, visibility 등 색상과 관련된 경우 이에 속합니다.
 
 composit 과정 순서
+
 JS -> DOM, CSSOM 재생성 -> Composit 의 과정으로 DOM과 CSSOM에 변경을 주는 요소 중 가장 가볍습니다.
+
 transform, opacity, cursor, orphans, perspective 등이 이에 해당됩니다.
 
-애니매이션을 사용할 경우 transform을 이용하는 것이 가장 적합합니다.
+애니매이션을 사용할 경우 transform을 이용하는 것이 가장 적은 리소스를 사용합니다.
 
-#  
 
 ### 렌더링 최적화 2 - async, defer
 
@@ -101,7 +107,7 @@ async는 HTML 파싱이 완료되지 전에 실행되므로 DOM에 종속되어 
 async는 HTML 다운로드가 완료된 시점에서 코드가 실행되므로 순서를 지정할 수 없습니다.
 
 defer은 HTML 파싱이 완료되지 후에 실행되므로 DOM에 종속되어 있는 JS여도 사용 가능합니다.
-defer은 HTML 파싱이 완료된 시점에서 코드가 실행되므로 순서를 지정할 수 있습니다..
+defer은 HTML 파싱이 완료된 시점에서 코드가 실행되므로 순서를 지정할 수 있습니다.
 
 
 ### 렌더링 최적화 3 - 리소스 우선순위 정하기.
@@ -121,11 +127,11 @@ defer은 HTML 파싱이 완료된 시점에서 코드가 실행되므로 순서�
 
 
 
-### 브라우저 렌더링 과정을 나타내는 지표
+## 브라우저 렌더링 과정을 나타내는 지표
 
 최적화된 렌더링을 나타내는 지표에 무엇이 있으며 이를 개선하기 위해서는 무엇을 해야할까요?
 
-#### 최적화된 렌더링을 나타내는 지표 1 - LCP
+### 최적화된 렌더링을 나타내는 지표 1 - LCP
 
 Largest Contentful Paint
 
@@ -139,7 +145,7 @@ Largest Contentful Paint
 LCP는 LCP를 나타내는 지표인 PerformanceEntry로 그 값이 정해지는데 기존 LCP보다 더 큰 
 콘텐츠가 변경되면 새로운 PerformanceEntry가 적용된다. DOM에 더 큰 새로운 요소가 생기는 
 경우도 새로운 PerformanceEntry가 적용되며 반대로 기존의 큰 요소가 사라진다면 사라진 가장 
-큰 요소가 최대 콘텐츠풀 요소로 유지된다.
+큰 요소가 최대 콘텐츠풀 요소로 유지됩니다.
 
 LCP 분석을 위해서는 가장 마지막에 확인된 PerformanceEntry만 분석하면 됩니다.
 
@@ -177,7 +183,7 @@ LCP가 일어나는 이유와 해결법은 다음과 같습니다.
 
   서버측 렌더링 사용, 사전 렌더링 사용, JS 최소화 및 사용하지 않는 JS 지연
 
-#### FID
+### FID
 
 First Contentful Paint(최초 콘텐츠풀 페인트)는 모든 콘텐츠가 페이지에 렌더링되는지를 나타내는 지표입니다.
 첫 요소들이 확인되는 시간으로 각 요소들의 상호작용과 응답성과 같은 부분은 고려하지 않습니다.
@@ -197,7 +203,7 @@ FID를 개선시킬 수 있는 방법은 다음과 같습니다.
 
  즉, JS 연산 시간을 최소한으로 줄이면 FID 지표가 높아집니다.
 
-#### CLS
+### CLS
 
 Cumulative Lay Shift(누적 레이아웃 이동)
 CLS는 렌더링 된 이후 0.5초 이내에 렌더링 되지 않아 전체적인 콘텐츠가 이동하는 불안정성을 말합니다.

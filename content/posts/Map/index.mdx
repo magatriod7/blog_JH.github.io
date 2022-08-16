@@ -1,0 +1,88 @@
+---
+title: 자바스크립트 자료구조 MAP
+date: 2022-08-14
+description: MAP
+tags:
+  - JS
+---
+
+## MAP
+
+Map 객체는 하나의 key와 하나의 값을 가지고 있습니다.
+
+
+
+Map과 객체는 매우 유사해 보이지만 많은 차이점이 있습니다. 
+
+### Map vs Object
+
+1. Accidental Keys
+
+> Map은 기본적으로 아무런 key값을 가지지 않습니다.
+> Object는 프로토타입 기반이기 때문에 default key 값이 존재합니다. 
+
+2. Key Types
+
+> Map는 모든 타입을 key 값으로 가질 수 있습니다. 단, key 값이 객체일 경우 유일한 key 값이 될 수는 없습니다.
+> Object는 Symbol과 String만 key 값으로 가질 수 있습니다.
+
+3. Key Order
+
+> Map의 key들은 매우 간단하고 직관적인 방법으로 선언 및 삽입 됩니다.
+> Object는 Map에 비해서 복잡한 과정을 거칩니다.
+
+4. Performance
+
+> Map은 key와 value를 새로 추가하거나 삭제하는 것에서 객체보다 좋은 성능을 냅니다.
+
+5. Serialization and parsing
+
+> Map은 Object에 비해서 파싱과 직렬화에 대한 기본적인 지원이 없습니다. (구축은 가능합니다.)
+
+```
+const map1 = new Map();
+
+map1.set('a', 1);
+map1.set('b', 2);
+map1.set('c', 3);
+
+console.log(map1.get('a'));
+// expected output: 1
+
+map1.set('a', 97);
+
+console.log(map1.get('a'));
+// expected output: 97
+
+console.log(map1.size);
+// expected output: 3
+
+map1.delete('b');
+
+console.log(map1.size);
+// expected output: 2
+
+var funcSample = () => {
+  console.log("hi")
+}
+
+var obj1 = {"a":5}
+
+map1.set(funcSample, "function")
+map1.set(obj1, "object")
+
+console.log(map1.get(funcSample))//"function"
+console.log(map1.get(obj1))//"object"
+```
+
+## 결론
+
+보다 뜯어봐야 알겠지만... 전체적으로 살펴본바로는 Map은 Object에 비해서 항목을 추가하거나 제거하는데 이점이 있지만 지원하는 매서드가 Object에 비해서 적다는 것 같습니다.
+
+그리고 객체의 key 값을 object나 function으로 사용하고 싶은 경우에도 사용 가능 할 것으로 생각됩니다.
+
+
+
+---
+
+[참고](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)

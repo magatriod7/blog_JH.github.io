@@ -1,50 +1,30 @@
 ---
-title: Symbol
-date: 2022-08-07
-description: Symbol
+title: null vs undefined
+date: 2022-07-29
+description: null vs undefined
   - JS
 ---
 
-Symbol의 자료형에 대해서는 한번씩은 들어 봤을 겁니다. 하지만 쓴 적은 별로 없을 것입니다. 이번에는 Symbol에 대해서 간단하게 짚고 넘어가겠습니다.
+null과 undefined는 둘 다 없음을 나타내는 값이지만 미세한 차이가 있습니다.
 
-Symbol은 이름 그대로 고유한 값을 하나 생성하여 만들어 주는 것입니다.
+## undefined
 
-그 특성으로
+값을 할상하지 않은 변수
 
-```
-var sym1 = Symbol();
-var sym2 = Symbol('foo');
-var sym3 = Symbol('foo');
+메서드와 선언에서 변수가 할당받지 못한 경우
 
-console.log(sym1 == sym2) // false
-console.log(sym3 == sym2) // false
-console.log(sym1 == sym3) // false
-```
+함수가 값을 return 하지 않을 때
 
-처럼 각 심볼은 고유의 값을 가지게 됩니다.
+즉, 값이 정해지지 않은 상황에서 기본적으로 부여되는 값입니다.
 
-보통 사용될 수 있는 대표적인 곳은 객체의 프로퍼티 생성입니다.
+## null
 
-```
-
-const obj = {};
-
-const sym1 = Symbol();
-const sym2 = Symbol('foo');
-const sym3 = Symbol('foo');
-
-obj[sym1] = 'propertyValue1';
-obj[sym2] = 'propertyValue2';
-obj[sym3] = 'propertyValue3';  // no conflict with sym2
-
-console.log(obj);  // {Symbol(): 'propertyValue1', Symbol(foo): 'propertyValue2', Symbol(foo): 'propertyValue3'}
-
-console.log(obj[sym1]);  // propertyValue1
-console.log(obj[sym2]);  // propertyValue2
-console.log(obj[sym3]);  // propertyValue3
-
-```
+null은 undefined와는 다르게 의도적으로 값을 비운 값입니다.
 
 ---
 
-[참조1](https://velog.io/@jeonbyeongmin/JS%EC%9D%98-%ED%98%B8%EC%9D%B4%EC%8A%A4%ED%8C%85%EA%B3%BC-var-let-const%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90)
+typeof undefined는 undefined로 출력되지만
+
+typeof null을 출력하면 object입니다.
+
+---

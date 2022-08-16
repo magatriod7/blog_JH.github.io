@@ -11,14 +11,14 @@ tags:
 
 HTTP 통신은 URL을 통해 HTML과 같은 정보를 주고받는 일종의 통신 규약이다. 흔히 웹페이지에 대한 정보를 주고 받는데 주로 쓰인다.
 
-![restful](./restful.png)
+![restful1](./restful.png)
 
 
 깊이 들어가면 네트워크에 대해서 들어가야하기 때문에 이 부분은 추후 설명하고 이번에는 간단하게 하고 넘어갈 예정이다.
 
-URI - <span style='background-color:#fff5b1 '>프로토콜</span> + <span style='background-color:#ffdce0 '>도메인</span> + <span style=' background-color:#F7DDBE'>uri</span> 
+URI - <span style='background-color:#fff5b1; color:black;'>프로토콜</span> + <span style='color:black; background-color:#ffdce0 '>도메인</span> + <span style=' color:black; background-color:#F7DDBE'>uri</span> 
 
-ex)<span style='background-color:#fff5b1 '>https:</span>//<span style='background-color:#ffdce0 '>github.com</span>/<span style=' background-color:#F7DDBE'>posth2071/repository</span> 
+ex)<span style='color:black; background-color:#fff5b1 '>https:</span>//<span style='color:black; background-color:#ffdce0 '>github.com</span>/<span style='color:black; background-color:#F7DDBE'>posth2071/repository</span> 
 
 HTTP 통신은 크게 line, header, body로 이루어져 있다. 
 
@@ -28,7 +28,7 @@ Header에는 body의 데이터 타입, 클라이언트 정보 등이 들어가 �
 
 body는 통신을 통해 얻을 data에 대한 정보를 주로 가지고 있다.
 
-![restful1](./restful1.png)
+![restful](./restful1.png)
 
 ![restful2](./restful2.png)
 
@@ -53,6 +53,7 @@ PATCH : 기존 데이터에서 일부분을 수정할 때 사용된다.
 DELETE : 기존 데이터를 삭제할 때 사용된다.
 
 예) GET)http://example.com/post/randomidnum -> 데이터 받아옴
+
 예) POST)http://example.com/post/randomidnum -> 데이터 새로 갱신
 
 같은 HTTP API를 이용하여 같은 주소에 요청을 넣었지만 method가 다르게 되면 서버에서 처리하는 방법이 달라진다.

@@ -47,30 +47,30 @@ font-family를 이용하여 폰트 이름을 설정하고 src를 이용하여 �
 
 Cumulative Lay Shift(누적 레이아웃 이동)을 방지하기 위해서라도 웹폰트의 최적화는 필요한 과정입니다.
 
-### font-display의 속성
+## font-display의 속성
 
-#### swap
+### swap
 
 ![swap](./webfont7.png)
 
 
 웹 글꼴이 로드될 때까지 대체 텍스트를 표시하도록 합니다. 대체 텍스트에서 원래 텍스트로 변경될 때 레이아웃의 변경이 있을 수도 있습니다.
 
-#### block
+### block
 
 ![block](./webfont6.png)
 
 
 3초동안 FOIT 방식을 이용하다가 3초 후에도 글꼴이 로드되지 않으면 FOUT 방식으로 변경됩니다.
 
-#### fallback
+### fallback
 
 ![fallback](./webfont5.png)
 
 
 FOIT 방식을 이용하던 도중 글꼴이 로드 된다 해도 일정 시간 이상 내에 로드되지 않으면 대체 글꼴을 유지합니다.
 
-#### optional
+### optional
 
 ![optional](./webfont4.png)
 
@@ -78,9 +78,9 @@ FOIT 방식을 이용하던 도중 글꼴이 로드 된다 해도 일정 시간 
 초반 매우 짧은 시간 내에 글꼴이 로드되지 않은 경우 대체 글꼴을 사용합니다. fallback에 비해 초반 시간이 매우 짧습니다.
 
 
-### 웹폰트
+## 웹폰트
 
-#### preload를 이용한 FOIT, FOUT 방지
+### preload를 이용한 FOIT, FOUT 방지
 
 link 속성 중 preload를 이용하여 폰트를 미리 로드하여 FOIT, FOUT를 방지할 수 있습니다.
 
@@ -90,20 +90,20 @@ link 속성 중 preload를 이용하여 폰트를 미리 로드하여 FOIT, FOUT
 
 사용자가 처음 인지하는 글꼴의 경우 다음을 적용하는 것이 효과적입니다.
 
-#### unicode-range 속성 이용하기
+### unicode-range 속성 이용하기
 
 
 ![unicode-range](./webfont8.png)
 
 unicode-range 속성은 사용될 폰트에 설정된 유니코드 범위에서 벗어나는 글자가 있을 경우 폰트 다운로드 하는것을 미리 막아 다운로드를 하지 않는 방식입니다.
 
-#### Font Style Matcher 이용하기
+### Font Style Matcher 이용하기
 
 ![font style matcher](./webfont9.png)
 
 사용하려는 폰트와 형식과 꼴이 기본 폰트 중 가장 비슷한 형식을 고릅니다. Font Face Observer 라이브러리를 이용하면 폰트 로드 전 후를 판단 후 글꼴을 바꿀 수도 있습니다.
 
-#### 그 외
+### 그 외
 
 위의 방법 외에도 적은 용량의 폰트 형식 사용하기, 서브셋 폰트(필요 없을 폰트를 잘라낸 간략한 정보를 담은 폰트) 사용하기 등이 있습니다.
 
