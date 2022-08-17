@@ -22,11 +22,9 @@ console.log(sym1 == sym3) // false
 ```
 
 처럼 각 심볼은 고유의 값을 가지게 됩니다.
-
 보통 사용될 수 있는 대표적인 곳은 객체의 프로퍼티 생성입니다.
 
 ```
-
 const obj = {};
 
 const sym1 = Symbol();
@@ -45,6 +43,64 @@ console.log(obj[sym3]);  // propertyValue3
 
 ```
 
+ 그렇다면 심볼을 어떻게 사용할 수 있을까요?
+
+### 프로퍼티 항목 숨기기
+
+심볼이 객체의 entry의 key값으로 사용될 수는 있지만 string으로 선언되어 있는 key와는 차이점이 있습니다.
+
+바로 저희가 흔하게 사용하는 Object.key()를 통해서 해당 entry에 접근할 수 없다는 것입니다.
+
+```
+obj1 = {
+  name: "john",
+  age: 27,
+}
+
+obj1.fun1 = function (){console.log(this.name)}
+
+obj1.fun1();
+//"john"
+
+
+for (let key in obj1){
+  console.log(`key:${key}    item:${obj1[key]}`)
+}
+//"key:name    item:john"
+//"key:age    item:27"
+//"key:fun1    item:function () {console.log(this.name);}"
+```
+
+obj의 자료를 이용하기 위해서 name과 age와 같은 객체의 item만 확인하려고 했지만
+새로 추가한 fun1 메소드가 따로 열거되는 것을 보실 수 있습니다.
+
+ ```
+obj1 = {
+  name: "john",
+  age: 27,
+}
+
+const fun1 = Symbol(`function1`)
+obj1[fun1] = function (){console.log(this.name)}
+
+obj1.[fun1]();
+//"john"
+
+for (let key in obj1){
+  console.log(`key:${key}    item:${obj1[key]}`)
+}
+//"key:name    item:john"
+//"key:age    item:27"
+```
+
+반면 Symbol을 사용한 경우 key 값으로 사용되지 않고 메소드의 이름으로만 사용되는 것을 살필 수 있습니다.
+
+객체 내에 존재하는 심볼의 종류를 알기 위해서는 Object.getOwnPropertySymbols(obj)를 통해 살필 수 있습니다.
+
 ---
 
 [참조1](https://velog.io/@jeonbyeongmin/JS%EC%9D%98-%ED%98%B8%EC%9D%B4%EC%8A%A4%ED%8C%85%EA%B3%BC-var-let-const%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90)
+
+[참조2](https://www.youtube.com/watch?v=E9uCNn6BaGQ&t=64s)
+
+[참조3](https://another-light.tistory.com/105)
