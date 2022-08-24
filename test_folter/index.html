@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+
+// function createLargeClosure() {
+//   const largeStr = new Array(1000000).join('x');
+
+//   const lc = function largeClosure() {
+//     return largeStr;
+//   };
+
+//   return lc;
+// }
+
+// const map = new Map();
+
+// function start() {
+// console.log("started")
+//   const timer = setInterval(() => {
+//     const lc = createLargeClosure();
+//     map.set(lc, '##');
+//   }, 1000);
+
+//   setTimeout(function () {
+//     clearInterval(timer);
+//   }, 10001);
+// }
+
+// window.onload() = start();
+
+
+///////////////////////
+function createLargeClosure() {//largeObj 생성
+  const largeObj = {
+    a: 1,
+    b: 2,
+    str: new Array(1000000).join('x')
+  };
+
+  const lc = function largeClosure() {
+    return largeObj;
+  };
+
+  return lc;
+}
+
+const memo = new WeakMap(); // weakmap 생성
+
+function memoize(obj) {
+  if (memo.has(obj)) {// 해당 객체의 데이터가 있다면 
+    console.log('Get cached result', memo.get(obj));
+    return memo.get(obj); // 해당 값 데이터 반환 
+  } 
+
+  console.log('Set computed result to caching map',  memo.get(obj));// 
+  const compute = obj.a + obj.b; // largeObj의 a와 b 값 더함 
+  memo.set(obj, compute); // memo에 obj의 key를 가지고 compute의 값을 가지는 entry 추가
+// lcObj()
+  return compute; // obj.a + obj.b 반환
+}
+
+
+function start() { // 실질적인 시작
+  const lcObj = createLargeClosure(); // lc(large closure) 제작 큰 객체 제작
+
+  const timer = setInterval(() => {
+    memoize(lcObj()); // 1초마다 lcObj를 memoize
+  }, 1000);
+
+  setTimeout(function () {
+    clearInterval(timer);
+  }, 5001); //5번 반복
+}
+    
+start()
+
+</script>
+</html>

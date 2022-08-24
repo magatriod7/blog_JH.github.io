@@ -1,0 +1,216 @@
+---
+title:Refactoring3
+date: 2022-08-20
+description: Refactoring3
+tags:
+  - refactoring
+---
+
+## 기본적인 리팩터링
+
+### 함수 추출하기
+
+전
+```
+function examplePrint(value){
+  var valueTemp = {};
+  valueTemp.name = value.name;
+  valueTemp.age = value.age;
+
+  console.log(valueTemp.name);
+  console.log(valueTemp.age)
+}
+
+```
+후
+
+```
+function examplePrint(value){
+  var valueTemp = {};
+  valueTemp.name = value.name;
+  valueTemp.age = value.age;
+  printDetail(valueTemp)
+
+  function printDetail(valueDetail){
+    console.log(valueDetail.name);
+    console.log(valueDetail.age)
+  }
+}
+```
+
+함수 추출하기는 가장 많이 사용되는 리팩터링 중 하나입니다. 반복되는 코드를 함수로 만듭니다.
+설령 그 코드가 무슨 일을 하는지 모르더라도 일단 추출 후 추후 이름을 바꿔주는 방식으로 진행합니다.
+
+짧아진 함수는 가독성이 좋아질 것입니다. 너무 많은 함수 추출로 인해 성능이 느려질까 걱정도 되지만 오히려 같은 함수를 반복적으로 사용하면
+함수 캐싱에 이점이 생겨 더 빠른 동작을 할 수도 있습니다.
+
+함수 추출을 잘하기 위해서는 이름을 잘 짓는것이 매우 중요합니다.
+
+### 함수 추출 절차
+
+위의 예시를 단계별로 진행해보겠습니다.
+
+
+```
+function examplePrint(value){
+  var valueTemp = {};
+  valueTemp.name = value.name;
+  valueTemp.age = value.age;
+
+  console.log(valueTemp.name);
+  console.log(valueTemp.age)
+
+  function printDetail(){}
+}
+```
+
+1. 함수를 새로 만드로 목적이 잘 드러나는 이름을 붙인다.
+
+```
+function examplePrint(value){
+  var valueTemp = {};
+  valueTemp.name = value.name;
+  valueTemp.age = value.age;
+
+  console.log(valueTemp.name);
+  console.log(valueTemp.age)
+
+  function printDetail(){
+    console.log(valueTemp.name);
+    console.log(valueTemp.age)
+  }
+}
+```
+
+2. 추출할 코드를 원본 함수에서 복사하여 새 함수에 붙여넣는다.
+
+```
+function examplePrint(value){
+  var valueTemp = {};
+  valueTemp.name = value.name;
+  valueTemp.age = value.age;
+
+  console.log(valueTemp.name);
+  console.log(valueTemp.age)
+
+  function printDetail(valueDetail){
+    console.log(valueDetail.name);
+    console.log(valueDetail.age)
+  }
+}
+```
+
+3. 추출한 코드 중 원본 함수의 지역 변수를 참조하거나 추출한 함수의 유효범위를 벗어나는 변수는 없는지 검사하고 만약 있다면 매개변수로 전달한다.
+
+4. 변수를 다 처리했으면 컴파일한다.
+
+
+```
+function examplePrint(value){
+  var valueTemp = {};
+  valueTemp.name = value.name;
+  valueTemp.age = value.age;
+  printDetail(valueTemp)
+
+  function printDetail(valueDetail){
+    console.log(valueDetail.name);
+    console.log(valueDetail.age)
+  }
+}
+```
+
+5. 원본 함수에서 추출한 코드 부분을 새로 만든 함수를 호출하는 문장으로 바꾼다.
+
+6. 테스트한다
+
+7. 다른 코드에 방금 추출한 것과 같거나 비슷한 코드가 없는지 살피고 만약 있다면 추출한 새 함수를 호출하도록 바꿀지 검토한다.
+
+### 함수 인라인하기
+
+전
+
+```
+function getRating(driver){
+  return moreThanFiveLateDeliveries(driver) ? 2:1;
+}
+
+function moreThanFiveLateDeliveries(driver){
+  return driver.numberOfLateDeliveries > 5;
+}
+```
+
+후
+
+```
+function getRating(driver){
+  return (driver.numberOfLateDeliveries >5 ) ? 2:1;
+}
+```
+
+함수를 사용하는 것만이 코드를 깔끔하게 만드는 것은 아닙니다. 불 필요한 함수의 사용보다는
+코드를 인라인으로 바꿔 더 간략하게 만들 수도 있습니다.
+
+### 변수 추출하기
+
+변수의 표현식이 너무 길면 알아듣기가 힘들어 집니다.
+
+```
+//전
+
+return a.num * a.price + b.num * b.price
+
+//후
+
+aResult = a.num * a.price;
+bResult = b.num * b.price;
+
+return aResult + bResult;
+```
+
+### 변수 인라인하기
+
+```
+//전
+let basePrice = anOrder.basePrice
+return (basePrice > 1000)
+//후
+return anOrder.basePrice > 1000;
+```
+
+### 함수 선언, 변수 이름 바꾸기
+
+```
+//전
+function calculate(value) {}
+//후
+function calculateAllAge {}
+// 보다 알아보기 쉽도록 함수 선언을 변경할 필요가 있다.
+
+### 변수 캡슐화하기
+
+```
+let defaultOwnerData = {first:"마틴", lastName:"파울러"};
+export function defaultOwner() {return defaultOwnerData;}
+export function setDefaultOwner(arg) {defaultOwnerData = arg;}
+```
+
+### 매개변수 객체 만들기
+
+```
+var name = "sam";
+var age = 11;
+var gender = "male":
+
+var persom = {
+  name : "sam",
+age : 11,
+gender : "male"
+}
+//후자가 관계를 볼 때 더 쉽게 관리할 수 있습니다.
+```
+
+
+
+
+
+---
