@@ -48,8 +48,6 @@ WeakMap 인스턴스 객체 내 key와 매핑된 값 존재 여부를 단언하�
 
 WeakMap 인스턴스 객체 내 key에 매핑되는 값(value)을 설정하고, WeakMap 인스턴스 객체를 반환합니다.
 
-#### WeakMap.prototype.clear()// 추후 추가 예정
-
 ```
 function createLargeClosure() {
   const largeStr = new Array(10).join('x');//array가 1000000개인 배열을 x로 초기화
@@ -63,8 +61,7 @@ function createLargeClosure() {
 ```
 
 ```
-
-const map = new Map();
+const map = new Map();/// WeakMap()
 
 function start() {
   const timer = setInterval(() => {
@@ -76,9 +73,13 @@ function start() {
     clearInterval(timer);
   }, 5001); // map 만들기 스톱
 }
-
 ```
 
+다음은 map과 weakMap으로 실행했을 떄 각 각의 결과입니다.
+
+그림1
+
+그림2
 
 map
 
@@ -91,7 +92,7 @@ john = null; // overwrite the reference
 ```
 
 Map의 경우, john이 초기화 되었지만 가비지 컬렉터는 여전히 john의 원래 메모리가
-map 안의 key 값으로 이용되고 있다는 것을 알고 있습니다. 고로 데이터를 초기화하지 않아 여전히 map 안에 
+map 안의 key 값으로 이용되고 있다는 것을 알고 있습니다. 고로 데이터를 초기화하지 않아 여전히 map 안에
 john의 메모리를 key 값으로 가지는 entry가 존재합니다.
 
 weakMap
@@ -172,7 +173,6 @@ WeakMap은 메모리 누수가 자주 일어날만한 코드에 사용됩니다.
 WeakMap은 memoization에 용이합니다. memoization은 비용이 큰 계산을 캐싱해 둔 뒤 같은 입력이 들어왔을 떄 캐싱된 결과를 반환하는 것입니다.
 
 ```
-
 function createLargeClosure() {//largeObj 생성
   const largeObj = {
     a: 1,
@@ -190,13 +190,13 @@ function createLargeClosure() {//largeObj 생성
 const memo = new WeakMap(); // weakmap 생성
 
 function memoize(obj) {
-  if (memo.has(obj)) {// 해당 객체의 데이터가 있다면 
+  if (memo.has(obj)) {// 해당 객체의 데이터가 있다면
     console.log('Get cached result');
-    return memo.get(obj); // 해당 값 데이터 반환 
-  } 
+    return memo.get(obj); // 해당 값 데이터 반환
+  }
 
-  const compute = obj.a + obj.b; // largeObj의 a와 b 값 더함 
-  console.log('Set computed result to caching map');// 
+  const compute = obj.a + obj.b; // largeObj의 a와 b 값 더함
+  console.log('Set computed result to caching map');//
   memo.set(obj, compute); // memo에 obj의 key를 가지고 compute의 값을 가지는 entry 추가
 // lcObj()
   return compute; // obj.a + obj.b 반환
@@ -214,15 +214,12 @@ function start() { // 실질적인 시작
     clearInterval(timer);
   }, 5001); //5번 반복
 }
-
-
 ```
-
 
 weakMap의 특징으로 내부 entry의 key 값이 객체여야합니다.
 
-비슷한 특징을 가진 weakSet의 경우도 기본적으로 성질은 Set과 비슷하지만 내부 요소가 weakMap과 같이 
-전부 객체여야하고 각 객체가 참조하던 메모리가 초기화 될 경우 해당 메모리를 다른 곳에서 참조하지 않는 상태면 자동적으로 
+비슷한 특징을 가진 weakSet의 경우도 기본적으로 성질은 Set과 비슷하지만 내부 요소가 weakMap과 같이
+전부 객체여야하고 각 객체가 참조하던 메모리가 초기화 될 경우 해당 메모리를 다른 곳에서 참조하지 않는 상태면 자동적으로
 해당 객체가 요소에서 삭제될 것입니다.
 
 ---

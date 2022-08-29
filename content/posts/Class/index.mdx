@@ -1,0 +1,95 @@
+---
+title: Class
+date: 2022-08-28
+description: Class
+tags:
+  - JS
+---
+
+## 자바스크립트의 클래스
+
+자바스크립트는 프로토타입 기반 언어이기 떄문에 클래스의 개념이 존재하지 않습니다.
+하지만 프로토타입을 일반적인 의미에서의 클래스 관점에서 접금해보면
+비슷하게 해석이 가능합니다.
+
+생성자함수 Array를 new 연산자와 함꼐 호출하면 인스턴스가 생성되는데 prototype 객체 내부
+요소들만 인스턴스에 상속됩니다.
+
+인스턴스에 상속되는지 아닌지에 따라서 스태틱 메소드와 퍼로퍼티 메소드로 나뉩니다.
+이 분류는 다른 언어의 클래스 구성요소에 대한 정의를 사용한 것으로 클래스 입장에서
+사용 대상에 따라 구분한 것입니다.
+
+그림 1 // 추가 예정
+
+예제를 통해 클래스 관점에서 바라본 프로토타입 시스템을 좀 더 살펴봅시다.
+
+```
+var Rectangle = function(width, height) {
+  this.width = width;
+  this.height = height;
+};
+Rectangle.prototype.getArea = function() {
+  return this.width * this.height;
+};
+Rectangle.isRectangle = function(instance) {
+  return (
+    instance instanceof Rectangle && instance.width > 0 && instance.height > 0
+  );
+};
+
+var rect1 = new Rectangle(3, 4);
+console.log(rect1.getArea()); // 12 (O)
+console.log(rect1.isRectangle(rect1)); // Error (X)
+console.log(Rectangle.isRectangle(rect1)); // true
+```
+
+isRectangle의 경우 프로토타입 메서드가 아닌 스태틱 메서드이기 때문에 인스턴스에서
+접근할 수 없게 됩니다. 결국 rect1.isRectangle(rect1)에 에러가 생기게 됩니다.
+
+## 클래스 상속
+
+```
+var Grade = function() {
+  var args = Array.prototype.slice.call(arguments);
+  for (var i = 0; i < args.length; i++) {
+    this[i] = args[i];
+  }
+  this.length = args.length;
+};
+
+Grade.prototype = [];
+var g = new Grade(100, 80);
+
+g.push(90);
+console.log(g); // Grade { 0: 100, 1: 80, 2: 90, length: 3 }
+
+delete g.length;
+g.push(70);
+console.log(g); // Grade { 0: 70, 1: 80, 2: 90, length: 1 }
+```
+
+![pic](./pic1.png)
+
+위의 예제에서 첫 g.push는 정상적으로 작동했지만 두번쨰 push는 3번 배열에 값을 추가하는 것이 아닌
+0번 배열을 재할당했습니다.
+그 이유는 g.**proto**(Grade.prototype)가 빈 배열을 가르키고 있기 때문입니다.
+push 명령에 따라서 자바스크립트 엔진이 g.length를 읽으려고 하는데 g.length가 없어
+프로토타입 체이닝을 통해 g.**proto**.length를 읽게 된 것입니다. 그렇게되면 g의 크기가 아닌
+g.**proto**의 크기를 length로 보게 되어 0번 배열에 요소를 추가한 것입니다.
+
+```
+...
+Grade.prototype = [a,b,c,d];
+var g = new Grade(100, 80);
+
+g.push(90);
+console.log(g); // Grade { 0: 100, 1: 80, 2: 90, length: 3 }
+
+delete g.length;
+g.push(70);
+console.log(g); // Grade { 0: 100, 1: 80, 4: 70, length: 1 }
+```
+
+만약 배열의 크기가 0이 아닌 4라고 하면 4번 인덱스에 값이 추가될 것입니다. 이처럼 클래스에 있는 값이 인스턴스의 동작에 영향을 주게 되는 것은 좋지 못한 현상입니다.
+
+---
