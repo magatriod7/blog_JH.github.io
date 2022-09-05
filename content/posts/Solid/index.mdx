@@ -1,0 +1,364 @@
+---
+title: SOLID
+date: 2022-09-04
+description: SOLID
+tags:
+  - 객체지향
+---
+
+## SOLID
+
+객체지향 프로그래밍을 하기 위한 가장 대표적인 원칙으로 이야기 되는 것에 SOLID원칙이 있습니다.
+각 5개의 원칙이 무엇을 의미하는지 정의해보겠습니다.
+
+### S - 단일 책임의 원칙 Single Responsibility Principle
+
+작성된 클래스는 하나의 책임만 가지고 클래스가 제공하는 모든 서비스는 하나의 책임만 담당하는데
+집중해야하는 원칙입니다. 여기서 책임은 '해야하는 것'과 '할 수 있는 것'을 이야기합니다.
+
+그렇다면 왜 SRP를 지켜야할까요? SRP 원리를 이용하면 책임 영역이 확실해져 서로 연관된 서비스가 수정될 때
+각자의 연쇄작용으로부터 자유로울 수 있습니다. 뿐만 아니라 책임을 적절히 분배하면 가독성, 유지보수가 용이해집니다.
+
+개념적으로는 비교적 단순하지만 다른 원칙에 비해서 설계하는 것이 생각보다 어려운 원칙입니다.
+
+리팩토링의 기법 중 산탄총 수술이라는 작업이 있었습니다. 산탄총 수술은 여러 메소드나 필드에 책임이
+산탄총을 쏜 것처럼 퍼져있어 이를 하나로 모아 처리할 수 있는 함수 혹은 클래스를 만드는 것이었습니다.
+이처럼 산발적으로 분포된 책임을 한 곳으로 모아 보다 나은 설계가 가능하게 됩니다.
+
+예시를 들어보겠습니다.
+
+```
+class goToMart {
+  constructor(martName){
+    this.martName = martName}
+
+  watchMovie(movie){
+    console.log(`watch ${movie}`)
+  }
+
+  buyPopcorn(taste){
+    console.log(`eat ${taste} popcorn`)
+  }
+  chooseSeat(number){
+    console.log(`watch on ${number} seat`)
+  }
+
+  martBuy(thing){
+    console.log(`buy ${thing}`)
+  }
+
+  refundBuy(thing){
+    console.log(`refund ${thing}`)
+  }
+
+  changeBuy(thing){
+    console.log(`change ${thing}`)
+  }
+}
+```
+
+간단하게 작성한 클래스 입니다. 마트에 가서 무엇을 하는지 정하는 클래스입니다.
+지금은 영화관과 마트로 두가지 경우를 뒀지만 만약 마트에 시설이 더 많이 있어서
+오락실을 가거나 피시방을 가거나 노래방을 가거나 하나씩 늘어간다고 생각할 때
+마트에 가서 내부 항목 중 무엇을 하는지를 하나의 클래스로 정하는 것은 별로 좋지 못한
+코드입니다.
+
+```
+
+class goToMart {
+  constructor(martName){
+    this.martName = martName}
+
+  martBuy(thing){
+    console.log(`buy ${thing}`)
+  }
+
+  refundBuy(thing){
+    console.log(`refund ${thing}`)
+  }
+
+  changeBuy(thing){
+    console.log(`change ${thing}`)
+  }
+
+class goToCinema {
+  constructor(cinemaName){
+    this.cinemaName = cinemaName
+  }
+    watchMovie(movie){
+    console.log(`watch ${movie}`)
+  }
+
+  buyPopcorn(taste){
+    console.log(`eat ${taste} popcorn`)
+  }
+  chooseSeat(number){
+    console.log(`watch on ${number} seat`)
+  }
+}
+```
+
+반면 이렇게 마트를 갈 때와 영화관을 갈 때로 각자 해야할 일과 하는 일에 따라서 분류를 하면
+보다 직관적으로 이 클래스에 접근할 때 얻을 수 있는 결과를
+알 수 있을 것입니다.
+
+### O - 개방 폐쇠 원칙 Open Close Principle
+
+소프트웨어 구성 요소는 확장에 열려있고, 변경에는 닫혀있어야한다는 원리입니다.
+쉽게 말해서 추가적인 기능은 생성하되 기존의 기능의 수정은 피해야 한다는 이야기입니다.
+
+```
+class Animal {
+  constructor(animal){
+    this.type = animal;
+  }
+}
+
+function bark(animal){
+  if(animal.type == "Cat"){
+    console.log("meow")
+  }else if(animal.type == "Dog"){
+    console.log("Baw")
+  }
+  else{
+    console.log("wrong Type")
+  }
+}
+
+let kitty = new Animal('Cat')
+let happy = new Animal('Dog')
+
+bark(kitty);
+bark(happy);
+```
+
+고양이면 meow 강아지면 baw라고 console 해주는 예시를 만들었습니다. 만약
+여기서 고양이와 강아지가 아닌 새로운 동물을 만들어야하면 function bark를 수정해야합니다.
+즉, 추가적인 기능을 생성하기 위해서는 기존의 기능을 수정해야하는 점에서 OCP를 위반합니다.
+
+```
+class AnimalClass {
+  constructor(type){
+    this.type = null;
+  }
+  setAnimal(type){
+    this.type = type
+  }
+  bark(){
+    this.type.bark();
+  }
+}
+
+class DogClass {
+  constructor(){}
+  bark(){
+    console.log("Baw")
+  }
+}
+class CatClass {
+  constructor(){}
+  bark(){
+    console.log("meow")
+  }
+}
+class SheepClass {
+  constructor(){}
+  bark(){
+    console.log("mee")
+  }
+}
+
+var Animal = new AnimalClass();
+var Dog = new DogClass();
+var Cat = new CatClass();
+var Sheep = new SheepClass();
+
+Animal.setAnimal(Dog);
+Animal.bark()// Baw
+Animal.setAnimal(Cat);
+Animal.bark()// meow
+Animal.setAnimal(Sheep);
+Animal.bark()// mee
+```
+
+위와 같이 사용하면 Animal의 내부를 수정하지 않고 새로운 동물의 클래스를 추가하는 것으로
+기존의 클래스를 수정하지 않고 무한한 기능 추가가 가능합니다.
+
+### L - 리스코브 치환의 법칙 The Liskov Substitution Principle
+
+객체는 프로그램의 정확성을 꺠지 않으면서 하위 타입의 인스턴스로 바꿀 수 있어야 합니다.
+
+```
+
+class Rectangle{
+  constructor(width, height){
+    this.width = width;
+    this.height = height
+  }
+  getWidth(){
+    return this.width;
+  }
+  getHeight(){
+    return this.height;
+  }
+   getArea(){
+    return this.height * this.width;
+  }
+  setWidth(width){
+    this.width = width;
+  }
+  setHeight(height){
+    this.height = height;
+  }
+}
+
+class Square extends Rectangle{
+  constructor(width){
+    super(width,width);
+  }
+  setWidth(width){
+    super.setWidth(width);
+    super.setHeight(width);
+  }
+
+  setHeight(height){
+    super.setWidth(height);
+    super.setHeight(height);
+  }
+}
+let rec = new Rectangle(10,5);
+console.log(rec.getArea())//50;
+rec.setWidth(20);
+console.log(rec.getArea())//100
+
+let squar = new Square(5)
+console.log(squar.getArea());//25
+squar.setWidth(20);
+console.log(squar.getArea());//400
+```
+
+겉보기에는 잘 작동하는 함수처럼 보이겠지만 사실 이 함수는 상위 클래스인 rectangle의 속성을
+가지지 못하는 square 클래스를 가집니다. 상위 컴포넌트와 하위 컴포넌트 사이의 치환이 불가능한 상태입니다.
+
+```
+
+class Shape{
+  constructor(width, height){
+    this.width = width;
+    this.height = height
+  }
+  getWidth(){
+    return this.width;
+  }
+  getHeight(){
+    return this.height;
+  }
+   getArea(){
+    return this.height * this.width;
+  }
+  setWidth(width){
+    this.width = width;
+  }
+  setHeight(height){
+    this.height = height;
+  }
+}
+
+class Square extends Rectangle{
+  constructor(width){
+    super(width,width);
+  }
+  setSquare(length){
+    super.setWidth(length);
+    super.setHeight(length);
+  }
+}
+
+class Rectangle extends Rectangle{
+  constructor(width){
+    super(width,width);
+  }
+  setRectangle(width,height){
+    super.setWidth(width);
+    super.setHeight(height);
+  }
+}
+
+let rec = new Rectangle(10,5);
+console.log(rec.getArea())//50;
+rec.setRectangle(7,8);
+console.log(rec.getArea())/56
+let squar = new Square(5)
+console.log(squar.getArea());//25
+squar.setSquare(10);
+console.log(squar.getArea());//100
+```
+
+반면 다음과 같이 구현하게 되면 square와 rectangle은 각자의 특징을 가진 메소드를 가지게 되면서
+상위 클래스인 shape의 속성을 모두 이용할 수 있게 됩니다.
+
+### I - 인터페이스 분리 원칙 interface segregation principle
+
+인터페이스 분리의 법칙은 어떻게 보면 처음 이야기했던 단일 목적의 법칙과 비슷합니다.
+각 함수나 클래스들이 한가지의 작업만을 하기 위해 만들어 지는 것이 좋습니다.
+
+```
+class machine{
+  copy(){
+    console.log("copy")
+  }
+  print(){
+    console.log("print")
+  }
+  erase(){
+    console.log("erase")
+  }
+}
+```
+
+위와 같은 여러가지의 작업을 할 수 있는 모듈이 있다고 가정합시다. 물론 하나의 기계가
+많은 작업을 할 수 있는 것은 좋아 보일 수도 있지만 적어도 프로그래밍 상에서는
+필요한 부분만 딱 잘라 쓰는 것이 더 편하고 간결할 것입니다.
+
+```
+class Copy{
+  copy(){
+    console.log("copy")
+  }
+}
+class Print{
+  print(){
+    console.log("print")
+  }
+}class Erase{
+  erase(){
+    console.log("erase")
+  }
+}
+```
+
+대표적으로 jQuery가 있습니다. jQuery가 물론 많은 기능을 가지고 있는 것은 맞지만
+jQuery를 사용하기에는 불필요한 너무 많은 데이터들을 가지고와야 합니다.(물론 큰
+부하를 일으키지 않을 작업을 사용할 경우 jquery가 매우 효과적인 도구이긴 합니다.)
+
+### D 의존관계 역전 원칙 - Dependency inversion principle
+
+고수준 정책을 구현하는 코드는 저수준 세부사항을 구현하는 코드에 의존해서는 안됩니다.
+
+좀 더 쉽게 설명하자면 저희들은 리액트나 axios등 매우 많은 모듈들을 사용합니다.
+하지만 그 모듈의 세부적인 부분을 하나하나 생각하면서 작업을 하기에는 너무 많은
+시간과 비용을 소모하게 됩니다.
+명령형 프로그래밍과 선언형 프로그래밍을 전에 이야기 한 적이 있었는데 도구를 효율적으로
+사용할줄 아는 선언형 프로그래밍의 중요도를 이야기 합니다.
+
+---
+
+https://www.nextree.co.kr/p6960/
+
+https://dev-momo.tistory.com/entry/SOLID-%EC%9B%90%EC%B9%99
+
+https://velog.io/@kyle/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-SOLID-%EC%9B%90%EC%B9%99-%EC%9D%B4%EB%9E%80
+
+https://intrepidgeeks.com/tutorial/javascript-solid-example
+
+https://velog.io/@teo/Javascript%EC%97%90%EC%84%9C%EB%8F%84-SOLID-%EC%9B%90%EC%B9%99%EC%9D%B4-%ED%86%B5%ED%95%A0%EA%B9%8C

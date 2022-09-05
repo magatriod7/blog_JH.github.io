@@ -1,0 +1,64 @@
+---
+title: proxy객체
+date: 2022-09-04
+description: SOLID
+tags:
+  - JS
+---
+
+```
+new Proxy(target,handler);
+```
+
+프록시 객체는 기존 객체에 값이 들어가기 전에 가로채는 객체라고 생각하면 편합니다.
+
+간단한 예시를 만들겠습니다. 프로퍼티 이름이 객체에 없을 경우 no Key라고 return하는
+객체를 만들어 보겠습니다.
+
+### get
+
+프록시 객체에서 get은 속성을 호출할 때 사용하는 함수입니다.
+
+```
+var handler = {
+    get: function(target, name){
+        return name in target? target[name] : "no key";
+    }
+};
+
+var obj = {d:7}
+var p = new Proxy(obj, handler);
+p.a = 1;
+p.b = undefined;
+
+console.log(p.a, p.b); // 1, undefined, 7
+console.log('c' in p, p.c); // false, "no key"
+```
+
+위의 경우처럼 기존에 d의 key를 가진 obj 객체에서 새로 추가한 a,b가 아닌 c의 경우 no key가 반환 된 것을 확인 할 수 있습니다.
+
+### set
+
+프록시 객체에서 set은 속성을 정의할 떄 사용하는 함수입니다.
+
+```
+const person = new Proxy({}, {
+  set: function(target, name, value){
+    const ageValidation = name === 'age' && !Number.isInteger(value);
+    if(ageValidation){
+      throw new TypeError("숫자만 적어주세요")
+    }// 예외처리
+
+    target[name]= value;
+    return true;
+  }
+})
+
+person.age = 23;
+console.log(person.age);
+person.age="열하나"; // Uncaught TypeError: 숫자만 적어주세요
+```
+
+위의 경우처럼 옳바르지 않은 값이 들어가면 예외처리를 해줄 수도 있습니다.
+
+---

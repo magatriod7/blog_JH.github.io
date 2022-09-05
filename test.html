@@ -6,6 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script>
+      // function createLargeClosure() {
+      //   const largeStr = new Array(10).join("x"); //array가 1000000개인 배열을 x로 초기화
+
+      //   const lc = function largeClosure() {
+      //     return largeStr; //largeStr arr return
+      //   };
+
+      //   return lc;
+      // }
+      // const map = new WeakMap(); /// WeakMap()
+
+      // function start() {
+      //   const timer = setInterval(() => {
+      //     const lc = createLargeClosure();
+      //     map.set(lc, "##");
+      //   }, 1000); // map을 5개 만듬
+
+      //   setTimeout(function () {
+      //     clearInterval(timer);
+      //   }, 5001); // map 만들기 스톱
+      // }
+      // window.addEventListener("click", start);
+
       function createLargeClosure() {
         const largeObj = {
           a: 1,

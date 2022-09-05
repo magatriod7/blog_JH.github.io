@@ -6,7 +6,6 @@ tags:
   - JS
 ---
 
-
 전에 실행 컨텍스트에 대해서 이야기하면서 생성단계의 마지막에 this를 생성한다고 말했습니다. 과연 this란 무엇일까요?
 
 ## 상황에 따라 달라지는 this
@@ -53,6 +52,9 @@ console.log(d, window.d, this.d) // 레퍼런스 에러
 다만 변수 선언을 한 경우 프로퍼티가 삭제되지 않는데 이는 자바스크립트 엔진이
 의도치 않게 삭제하는 것을 방어하는 일종의 전략입니다.
 
+
+```
+
 ### 메서드로서 호출할 때 그 메서드 내부에서의 this
 
 어떤 함수를 실행하는 방법으로는 함수로 호출하는 방법과 메서드로 호출하는 방법으로
@@ -64,37 +66,42 @@ console.log(d, window.d, this.d) // 레퍼런스 에러
 
 ```
 var func = function(x) {
-  console.log(this,x);
+console.log(this,x);
 };
 func(1); // Window {...} // 일반 함수로 호출되었기 때문에 window
 
 var obj = {
-  method: func
+method: func
 };
 
 obj.method(2) // {method:f} 2// obj의 메서드로 호출되었기 때문에 obj
 obj.['method'](2) // {method:f} 2// obj의 메서드로 호출되었기 때문에 obj
+
 ```
+
 좀 더 쉽게 설명하면 .이나 대괄호 표기법을 통해서 함수를 호출하면 메서드, 그렇지 않으면 함수로 호출한 것입니다.
 
 다른 예시를 살펴보겠습니다.
 
 ```
+
 var obj1 = {
-  outer: function () {
-    console.log(this); // 1: obj1
-    var innerFunc = function(){
-      console.log(this)
-    }
-    innerFunc(); // 2: Window(전역객체)
+outer: function () {
+console.log(this); // 1: obj1
+var innerFunc = function(){
+console.log(this)
+}
+innerFunc(); // 2: Window(전역객체)
 
     var obj2 = {
       innerMethod: innerFunc
     };
     obj2.innerMethod(); // 3: obj2
-  }
+
+}
 };
-obj1.outer(); 
+obj1.outer();
+
 ```
 
 위의 소스코드를 실행시키면 주석을 단 부분에서 각 console.log가 순서대로
@@ -107,19 +114,27 @@ this는 각 메소드의 점 앞의 객체에 바인딩 됩니다.
 함수로 호출 하더라도 this를 바인딩할 수 있는 방법이 있습니다.
 
 ```
+
 var obj1 = {
-  outer: function () {
-    console.log(this); // 1: obj1
+outer: function () {
+console.log(this); // 1: obj1
 
     var self = this/// this를 변수에 저장하면 된다.
 
     var innerFunc = function(){
       console.log(self)
     }
+        var innerFunc2 = function(){
+      console.log(this)
+    }
     innerFunc(); // 2: obj1
-  }
+    innerFunc2(); // 3: Window
+
+
+}
 };
-obj1.outer(); 
+obj1.outer();
+
 ```
 
 위의 예시처럼 this를 저장하고 self를 통해 해당 함수를 사용할 경우 저희는 함수만
@@ -128,28 +143,41 @@ obj1.outer();
 다른 방법으로는 저희가 흔하게 사용하는 화살표 함수를 이용하는 방법이 있습니다.
 
 ```
+
 var obj1 = {
-  outer: function () {
-    console.log(this); // 1: obj1
+outer: function () {
+console.log(this); // 1: obj1
 
     var innerFunc = () => {
       console.log(this)
     }
     innerFunc(); // 2: obj1
-  }
+
+}
 };
-obj1.outer(); 
+obj1.outer();
+
 ```
 
 화살표 함수를 이용할 경우 this의 바인딩 과정이 사라지게 되면서 상위 스코프의 this를 그대로 사용 할 수가 있게 됩니다.
 
-### 콜백 함수 호출 시 그 함수 내부에서의 this가
+### 콜백 함수 호출 시 그 함수 내부에서의 this
 
-// 추후 추가 예정
+콜백 함수의 경우 함수의 특징에 따라서 this가 달라질 수 있습니다.
+예를 들어 setTimeout의 경우 global을 가지게 되었지만
+addEventListener의 경우 메서드명 . 앞부분이 됩니다.
 
 ### 생성자 함수 내부에서의 this
 
-// 추후 추가 예정
+```
+var Dog = function (name, age){
+  this.bark = '야옹'
+  this.name = name
+  this.age = age
+}
+```
+
+생성자 함수의 경우 this가 생성될 인스턴스를 지칭하게 됩니다.
 
 ## 명시적으로 this를 바인딩 하는 방법
 
@@ -159,12 +187,14 @@ call 메서드는 호출 주체인 함수를 즉시 실행하도록 하는 명�
 이후의 인자들을 매개변수로 정하게 됩니다.
 
 ```
+
 var func = function ( a, b, c){
-  console.log(this,a,b,c);
+console.log(this,a,b,c);
 };
 
 func(1,2,3); //Window{...}, 1 2 3
 func.call({x:1}, 4, 5, 6); // {x:1} 4 5 6 // {x:1}이 this가 되었습니다.
+
 ```
 
 ### apply 메서드
@@ -172,10 +202,12 @@ func.call({x:1}, 4, 5, 6); // {x:1} 4 5 6 // {x:1}이 this가 되었습니다.
 apply 메서드는 call 메서드와 기능적으로 완전히 동일합니다. call 매서드가 첫번째 인자를 제외한 나머지 인자들을 매개변수로 지정하는 것과는 다르게 apply 메서드는 두번째 인자를 배열로 받아 그 배열의 요소들을 호출할 함수의 매개변수로 지정한다는 점에서만 차이가 있습니다.
 
 ```
+
 var func = function ( a, b, c){
-  console.log(this,a,b,c);
+console.log(this,a,b,c);
 };
 func.apply({x:1}, [4, 5, 6]); // {x:1} 4 5 6// {x:1}이 this가 되었습니다.
+
 ```
 
 ### 생성자 내부에서 다른 생성자 호출
@@ -187,8 +219,9 @@ func.apply({x:1}, [4, 5, 6]); // {x:1} 4 5 6// {x:1}이 this가 되었습니다.
 bind 메서드는 ES5에서 추가된 기능으로, call과 비슷하지만 즉시 호출하지 않고 넘겨 받은 this 및 인수들을 바탕으로 새로운 함수를 반환하는 메서드입니다.
 
 ```
+
 var func = function(a,b,c,d) {
-  console.log(this,a,b,c,d);
+console.log(this,a,b,c,d);
 };
 func(1,2,3,4) // window() 1 2 3 4
 
@@ -200,10 +233,8 @@ bindFunc2(7,8); //{x:1} 4 5 7 8
 
 call, apply, bind 셋다 문법적으로는 조금 다르지만 this를 원하는 형태로 bind가 가능합니다.
 
-### 화살표 함수의 예외사항
-
-화살표 함수를 이용할 경우 this는 전역객체가 아닌 가장 가까운 this에 접근하게 됩니다.
-
 ```
 
 ---
+
+참조 - 코어자바스크립트.정재남
