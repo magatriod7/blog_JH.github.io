@@ -1,0 +1,59 @@
+---
+title: Reflect
+date: 2022-09-8
+description:
+tags:
+  - 객체주의
+---
+
+의존성 주입이란 코드의 의존성을 외부에서 주입하는 것을 의미합니다.
+
+간단한 예시를 들어보겠습니다.
+
+```
+import member_V1 from "./member_V1"
+
+export logIn = (ID,password) => {
+  member_V1.Login(ID,password)
+}
+export signUp = (ID,password) => {
+  member_V1.signUp(ID,password)
+}
+```
+
+로그인과 회원가입을 동시에 관리하는 모듈이 있었습니다.
+해당 모듈은 member_V1이라는 라이브러리를 통해서
+회원 관리를 하고 있었습니다. 그런데 중간에 member_V1에
+치명적인 오류가 생겨 module_V2로 업데이트를 해야할 경우
+해당 모듈 내부 member_V1을 전부 수정해야합니다.
+지금 예시야 2개의 함수만 export했지만 만약 이런
+함수가 수십개가 되고 더 복잡할 경우 골치아파 질 것입니다.
+
+```
+import member_V1 from "./member_V1"
+
+let memberControl = (member) => {
+  return {
+    test: () => {
+      console.log("test");
+    },
+    signUp: member.signUp,
+    logIn: member.logIn,
+  };
+};
+
+let meb = memberControl(member_V1);
+
+export meb
+```
+
+반면 위의 예시처럼 함수의 외부에서
+의존성을 주입하게 될 경우 member에 들어갈
+라이브러리만 바꿔주면 될 뿐
+모든 함수를 고치지는 않아도 될 것입니다.
+
+## 또한 클래스 간의 결합도가 약해져 코드 확장이 더 쉬워질 것입니다.
+
+https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Reflect
+
+https://velog.io/@longroadhome/%EB%AA%A8%EB%8D%98JS-Proxy%EC%99%80-Reflect

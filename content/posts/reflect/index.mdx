@@ -1,0 +1,88 @@
+---
+title: Reflect
+date: 2022-09-09
+description:
+tags:
+  - JS
+---
+
+Reflect는 프록시 처리기와 같이 JS에서 중간에 가로챌 수 있는 JS 작업에 대한 메서드를 제공하는
+내장 객체입니다.
+
+Proxy와는 다르게 생성자가 아니기 떄문에 함수처럼 호출하거나 new 인스턴스를
+만들 수 없습니다.
+
+### Reflect 사용 예시
+
+#### 1. 에러 핸들링
+
+```
+// 1. 에러 핸들링
+const obj = {};
+try {
+  Object.defineProperty(obj, 'prop', { value: 1 });
+  console.log('success');
+} catch(e) {
+  console.log(e);
+}
+
+const obj2 = {};
+if (Reflect.defineProperty(obj2, 'prop', { value: 1 })) {
+  console.log('success');
+} else {
+  console.log('problem creating prop');
+}
+```
+
+위와 같이 obj.defineProperty를 통해 요소를 추가할 수 있습니다.
+
+#### 2. 더 읽기 쉬운 코드
+
+```
+const obj = { prop: 1 };
+console.log(Reflect.has(obj, 'prop') === ('prop' in obj)); // true
+```
+
+위의 두가지 예시에서 이상한 점이 있습니다.
+저희가 객체 내부의 요소를 살펴보기 위해서는 Object.hasOwnProperty를 사용해야하는데
+분명 no-prototype-builtins 규칙에 의해서
+기본 객체 내장 메서드의 메서드를 사용하지 못하게 합니다.
+
+간단하게 말해서 hasOwnProperty 메소드를 사용하기 위해서는
+obj.hasOwnProperty를 사용하는 것이 아닌 Object.prototype.hasOwnProperty.call
+또는 Obeject.hasOwnProperty로 사용해야합니다.
+
+해당 메소드가 Object의 프로토타입에 있음에도 하위 인스턴스에서 접근을 할 수 없게 되는 것이죠.
+
+하지만 저희는 이를 Reflect.has를 통해서 해결할 수도 있습니다.
+
+```
+const obj = { prop: 1, hasOwnProperty: 2 };
+// console.log(obj.hasOwnProperty("prop")); //obj.hasOwnProperty is not a function
+console.log(Object.prototype.hasOwnProperty.call(obj, "prop")); //true
+console.log(Reflect.has(obj, "prop")); //true
+```
+
+#### 3. Reflect.get
+
+reflect.get은 obj[key]와 같은 일을 하지만 후자의 경우 undefined를 내보이는데에 반해서
+reflect.get은 typeError을 발생시킨다.
+
+```
+const obj = { prop: 1 };
+> Reflect.get(obj, 'prop');
+1
+
+> 'a'['prop'];
+undefined
+> Reflect.get('a', 'prop');
+Uncaught TypeError: Reflect.get called on non-object
+```
+
+## 4. Proxy에서 Reflect 사용
+
+---
+
+https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Reflect
+
+https://velog.io/@longroadhome/%EB%AA%A8%EB%8D%98JS-Proxy%EC%99%80-Reflect

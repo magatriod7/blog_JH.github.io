@@ -1,0 +1,477 @@
+---
+title: redux 초기 환경설정하기
+date: 2022-09-07
+description: Async-Await
+tags:
+  - JS
+---
+
+해당 글은 학원 학생관리 프로젝트를 만들기 전 간단한 초기 세팅을 다룬 글로 추후 redux에 대한 부분은
+자세하게 다루겠습니다.
+
+### 리액트 - 아쉽게도 CRA
+
+### react-router-dom
+
+리액트는 기본적으로 SPA(SIngle Page Application)입니다.
+기존의 방식처럼 새로운 경로로 접속하여 새로운 페이지를 로드하지 않고
+페이지 안에서 수정이 필요한 부분만 데이터를 가져오는 형태입니다.
+
+이것을 가능하게 해주는 것이 react-router-dom입니다.
+
+```
+npm install react-router-dom
+```
+
+CRA가 만들어진 경로에 react-router-dom을 설치합니다.
+
+react-router-dom이 잘 작동하는지 확인하기 위해 간단한 코드를 작성합니다.
+
+app.js
+
+```
+import logo from "./logo.svg";
+import "./App.css";
+import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
+import { Sample } from "./Component/sample";
+import { Sample2 } from "./Component/sample2";
+import { Sample3 } from "./Component/sample3";
+
+function App() {
+  return (
+    <div className="App">
+      <Router>
+        <div>
+          <ul>
+            <li>
+              <Link to="/">1</Link>
+            </li>
+            <li>
+              <Link to="/about">2</Link>
+            </li>
+            <li>
+              <Link to="/topics">3</Link>
+            </li>
+          </ul>
+
+          <Routes>
+            <Route path="/" element={<Sample />} />
+            <Route path="/about" element={<Sample2 />} />
+            <Route path="/topics" element={<Sample3 />} />
+          </Routes>
+        </div>
+      </Router>
+    </div>
+  );
+}
+
+export default App;
+```
+
+sample.js
+
+```
+export const Sample = () => {
+  return <div>React-Router-Dom </div>;
+};
+```
+
+sample2.js
+
+```
+export const Sample = () => {
+  return <div>React-Router-Dom 1</div>;
+};
+```
+
+sample3.js
+
+```
+export const Sample = () => {
+  return <div>React-Router-Dom 2</div>;
+};
+```
+
+react-router-dom은 현재 switch를 지원하지 않는 대신 routes를 사용하면 됩니다.
+
+`Link` 태그는 SRA가 가능하게 해주는 ract-router-dom의 태그입니다.
+만약 a태그를 이용해서 새로운 경로로 접속할 경우 해당 경로의 데이터를 받아와
+렌더링 과정을 해야하는데 Link태그를 이용하면 현재 페이지에서 필요한
+부분만 업데이트하는 경우로 필요한 경우 데이터를 받아야겠지만
+따로 데이터를 받지 않고 이미 받은 데이터를 이용하여 페이지를 나타내는 등의
+처리도 가능하게 됩니다.
+
+한줄로 요약하자면 Link 컴포넌트는 브라우저의 주소만 바꿀 뿐, 페이지를
+새로 불러오지는 않습니다.
+
+`Routes` 태그는 현재 도메인의 경로를 인식하여 `Route` 중 match하는 것을
+렌더링 합니다. 위의 예시에서는 하나의 Routes만 존재하지만 경로에 따라서
+다르게 나오는 본문 내용과 navBar가 동시에 있으면
+Routes를 2개 이상 넣어 도메인 경로에 따라서 변경되는 값이 2개 이상이 존재할
+수도 있습니다.
+
+### emotion
+
+기존에 styled-component는 component 이름에 해당 노드의 정보를 넣지 않으면
+알아보기 힘들다고 생각하여 emotion을 사용해보기로 했습니다.
+
+```
+npm install @emotion /styled
+```
+
+sample2.js
+
+```
+import styled from "@emotion/styled";
+
+const DivStyle = styled.div`
+  background-color: yellow;
+  font-size: 24px;
+  border-radius: 4px;
+  padding: 32px;
+  text-align: center;
+  &:hover {
+    color: white;
+  }
+  label: test;
+`;
+
+export const Sample2 = () => {
+  return <DivStyle>호버 기능은 위처럼 사용하면 됩니다.</DivStyle>;
+};
+```
+
+첫번째는 @emotion styled를 사용하는 방법입니다. styled-component와 같은 방식으로 사용 가능합니다.
+
+```
+npm install @emotion/react
+```
+
+sample.js
+
+```
+/** @jsxImportSource @emotion/react */
+import { css, jsx } from "@emotion/react";
+
+const divStyle = css`
+  background-color: hotpink;
+  font-size: 24px;
+  border-radius: 4px;
+  padding: 32px;
+  text-align: center;
+  &:hover {
+    color: white;
+    background-color:blue;
+  }
+  label: test;
+`;
+
+export const Sample = () => {
+  return <div css={divStyle}>React-Router-Dom </div>;
+};
+```
+
+두번째 방법으로는 @emotion/react를 사용하는 방법입니다. 이 방법의 경우
+CRA로 프로젝트를 만들면 jest나 craco를 이용해서
+babel 설정을 하지 않으면 맨 위에 @jsxImportSource @emotion/react 부분을 꼭 적어줘야합니다.
+
+두 방법 모드 label을 이용하면 무작위로 생성되는 클래스 이름 뒤에 원하는 이름을 붙여
+알아보기 편하게 라벨링을 할 수도 있습니다.
+
+더 많은 기능이 있지만 해당 프로젝트에서는 이정도만 다루기로 하겠습니다.
+
+### Redux - 리덕스
+
+리덕스는 일종의 state 관리 라이브러리입니다. redux와 같은 상태관리 라이브러리가
+존재하지 않는다면 state는 상속을 이용해서 작동하기 때문에 관리가 너무 복잡해집니다.
+
+리덕스는 관리할 요소를 저장하는 store와 store를 다를 reducer을 통해
+일종의 setState와 비슷한 개념을 가지고 있습니다. 모든 컴포넌트들은
+store에서 데이터를 불러오면 되기 때문에 상속의 개념을 필요로 하지 않아
+보다 편한 개발이 가능해집니다.
+
+### Redux-saga - 리덕스 사가
+
+저희가 리듀서를 사용할 경우 대부분이 외부 API로부터 값을 받아와서
+store의 값을 수정하는 형식일 것입니다. API로 값을 받아올 때는 axios와 같은
+통신 라이브러리를 사용할 것인데 이 때 중간 Middleware로 사용되어 비동기처리가
+될 수 있도록 해주는 것이 Redux-saga입니다.
+
+간단하게 소개했으니 리덕스를 해당 프로젝트에 적용해보겠습니다.
+
+```
+npm install redux
+```
+
+리덕스를 설치한 후에
+
+사진
+
+리덕스 폴더를 생성해주겠습니다.
+
+type.js
+
+```
+//상황 관리 js
+
+export const TEST_GET_REQUEST = "test/EMPLOYER_INFO_GET_REQUEST";
+export const TEST_GET_SUCCESS = "test/EMPLOYER_INFO_GET_SUCCESS";
+export const TEST_GET_FAILURE = "test/EMPLOYER_INFO_GET_FAILURE";
+```
+
+각 상황의 상태에 따라서 액션을 정해줍니다.
+
+testReducer.js
+
+```
+import { TEST_GET_FAILURE, TEST_GET_REQUEST, TEST_GET_SUCCESS } from "../type";
+
+const initialState = {
+  testInfo: [],
+  test: false,
+  errmsg: "",
+};
+
+export default function testReducer(state = initialState, action) {
+  switch (action.type) {
+    case TEST_GET_REQUEST:
+      return {
+        ...state,
+        testInfo: {},
+        errmsg: "",
+      };
+    case TEST_GET_SUCCESS:
+      return {
+        ...state,
+        testInfo: action.payload.testInfo,
+        errmsg: "",
+      };
+    case TEST_GET_FAILURE:
+      return {
+        ...state,
+        errmsg: action.payload.errmsg,
+      };
+    default:
+      return state;
+  }
+}
+
+```
+
+먼저 간단한 리듀서를 만들어줍니다. 이름은 testReducer로 지었습니다. 앞서 type.js에서
+action을 import하고 testReducer의 초기 값을 정해줍니다.
+testReducer은 TEST_GET_XXXXXX가 redux saga에서 사용되면 각 action에 따른
+처리를 하게 됩니다. 여기서 ...state는 기존 값을 사용하면서 아래 적힌 값을 기존 값에서 수정하게 됩니다.
+
+redux/reducer/index.js
+
+```
+import { combineReducers } from "redux";
+import testReducer from "./testReducer";
+
+const rootReducer = combineReducers({ testReducer });
+
+export default rootReducer;
+```
+
+다음 index.js는 여러개의 리듀서를 하나로 합쳐주는 combineReducers를 이용하여 상태를 관리하는 모습입니다.
+
+다음은 리덕스 사가를 만들어 보겠습니다.
+
+testSaga.js
+
+```
+import { TEST_GET_FAILURE, TEST_GET_REQUEST, TEST_GET_SUCCESS } from "../type";
+import { all, call, put, takeEvery, fork } from "redux-saga/effects";
+import axios from "axios";
+
+const axiosTestGetSaga = (action) => {
+  return axios.get("http://localhost:3001/");
+};
+function* testGetSaga(action) {
+  try {
+    const posts = yield call(axiosTestGetSaga, action.payload);
+    yield console.log(action.payload)
+    yield put({
+      type: TEST_GET_SUCCESS,
+      payload: { testInfo: { test: "done" }, test: true },
+    }); // 성공 액션 디스패치
+  } catch (e) {
+    yield put({
+      type: TEST_GET_FAILURE,
+      error: true,
+      payload: { errmsg: e },
+    }); // 실패 액션 디스패치
+  }
+}
+
+function* watchTestGet() {
+  yield takeEvery(TEST_GET_REQUEST, testGetSaga);
+}
+
+export function* testSaga() {
+  yield all([fork(watchTestGet)]);
+}
+```
+
+이번에 만든 testSaga.js입니다. 맨 아래 testSage는 TEST_GET_REQUEST가 dispatch되면
+watchTestGet를 통해 testGetSaga가 실행되고 해당 함수들이 잘 작동하면 TEST_GET_SUCCESS를,
+그렇지 못하다면 TEST_GET_FAILURE를 디스패치하게 됩니다.
+
+저는 여기서 axios를 사용했으니 axios 라이브러리도 npm을 이용해 설치해줍시다.
+
+redux/sagas/index.js
+
+```
+import { all, call, delay, fork, put, takeEvery } from "redux-saga/effects";
+import { testSaga } from "./testSaga";
+
+// single entry point to start all Sagas at once
+export default function* rootSaga() {
+  yield all([fork(testSaga)]);
+}
+```
+
+사기도 리듀서와 같이 index로 여러개를 관리할 수 있습니다.
+
+여기까지 간단하게 만들어본 reducer와 saga였습니다 이제 이걸 적용해봅시다.
+
+/src/index.js
+
+```
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { Provider } from "react-redux";
+import rootReducer from "./redux/reducer/index";
+import rootSaga from "./redux/sagas/index";
+import createSagaMiddleware from "redux-saga";
+import { composeWithDevTools } from "redux-devtools-extension"; // 리덕스 개발자 도구
+import { createStore, applyMiddleware } from "redux";
+
+const sagaMiddleware = createSagaMiddleware();
+
+export const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(sagaMiddleware))
+);
+
+sagaMiddleware.run(rootSaga);
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+
+Provider 태그 내부에서는 생성한 store를 사용할 수 있게 됩니다.
+
+해당 글은 초기 설정에 대해서만 간단하게 적은 만큼 리덕스에 대해서 자세하게는 추후 따로 설명하겠습니다.
+
+sample.js
+
+```
+/** @jsxImportSource @emotion/react */
+import { css, jsx } from "@emotion/react";
+import { useSelector } from "react-redux";
+
+const divStyle = css`
+  background-color: hotpink;
+  font-size: 24px;
+  border-radius: 4px;
+  padding: 32px;
+  text-align: center;
+  &:hover {
+    color: white;
+    background-color: blue;
+  }
+  label: test;
+`;
+
+export const Sample = () => {
+  const selector = useSelector((state) => state);
+
+  return (
+    <div
+      css={divStyle}
+      onClick={() => {
+        console.log(selector);
+      }}
+    >
+      React-Router-Dom
+    </div>
+  );
+};
+```
+
+다음과 같이 확인하니 reducer가 잘 생성된 것을 확인할 수 있었습니다.
+
+sample2.js
+
+```
+import styled from "@emotion/styled";
+import { useDispatch, useSelector } from "react-redux";
+import { TEST_GET_REQUEST } from "../redux/type";
+
+const DivStyle = styled.div`
+  background-color: hotpink;
+  font-size: 24px;
+  border-radius: 4px;
+  padding: 32px;
+  text-align: center;
+  &:hover {
+    color: white;
+    background-color: blue;
+  }
+  label: test;
+`;
+
+export const Sample2 = () => {
+  const dispatch = useDispatch();
+
+  return (
+    <DivStyle
+      onClick={() => {
+        dispatch({ type: TEST_GET_REQUEST });
+      }}
+    >
+      Hover to change color.
+    </DivStyle>
+  );
+};
+```
+
+db.json
+
+```
+{
+  "test": [
+    {
+      "id": 1,
+      "title": "첫 메모 제목",
+      "body": "첫 메모 내용"
+    }
+  ]
+}
+```
+
+이 후 sample2.js를 통해 dispatch를 해봅시다.
+
+사진 2
+
+잘 작동합니다.
+
+---
+
+https://gomgomkim.tistory.com/9

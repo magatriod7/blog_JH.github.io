@@ -1,0 +1,96 @@
+---
+title: 백준 2583 js
+date: 2022-09-11
+description:
+tags:
+  - algorism
+---
+
+## 섬의 개수([https://www.acmicpc.net/problem/4963](https://www.acmicpc.net/problem/4963))
+
+### 1. 문제 요약
+
+- DFS/BFS를 이용한 인접한 섬의 개수 찾기
+
+### 2. 푸는 과정
+
+```
+1. 2차원 배열에 정보를 저장
+2. 섬에서 DFS/BFS 시작 => 이미 헤아린 섬은 0처리, 아직 가지 않은 섬은 1처리
+3. 총 섬의 개수 출력
+출력
+```
+
+### 3. 총평 및 주의 사항
+
+```
+기존 BFS/DFS 문제와 크게 다르지 않았다. JS의 경우 배열을 이용해서 shift를 하는 것에 n의 복잡도를 가지게 되는데 queue를 이용한 BFS의 경우 이 부분을
+반복적으로 사용하게 된다. 이렇게 최단거리를 구하는 경우가 아닌경우 DFS로 푸는 것이 더 좋다고 생각하여 DFS로 풀었다.
+
+기존 DFS,BFS와 다른점이라면 갈 수 있는 방향이 8방향이라는 점이었다.
+```
+
+### 4. 결과
+
+> 정답여부 : 정답, 소요 시간: 18분
+
+---
+
+```
+const readline = require("readline");
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+let input = [];
+let dx = [0, 0, 1, -1, 1, 1, -1, -1]; //x값 방향 그래프 받기
+let dy = [1, -1, 0, 0, 1, -1, 1, -1]; //y값 방향 그래프 받기
+let result = [];
+let resultStr = "";
+let count = 0;
+let inputIdx = 0;
+rl.on("line", function (line) {
+  input.push(line);
+}).on("close", function () {
+  let inputLen = input.length;
+  while (inputIdx < inputLen - 1) {
+    // inputLen와 Idx 크기가 같아지면
+
+    let count = 0;
+    let [MaxX, MaxY] = input[inputIdx].split(" ").map(Number);
+    queue = [];
+
+    // console.log(MaxX, MaxY);
+    inputIdx++;
+    let map = new Array(MaxY).fill(0);
+
+    for (let i = 0; i < MaxY; i++) {
+      map[i] = input[inputIdx].split(" ").map(Number);
+      inputIdx++;
+    } //배열 완성
+
+    for (let i = 0; i < MaxY; i++) {
+      for (let j = 0; j < MaxX; j++) {
+        if (map[i][j] == 1) {
+          DFS(i, j);
+          count++;
+        }
+      }
+    }
+
+    function DFS(y, x) {
+      if (y < 0 || x < 0 || y >= MaxY || x >= MaxX) return;
+      if (map[y][x] != 1) return;
+      map[y][x] = 0;
+      for (let i = 0; i < 8; i++) {
+        DFS(y + dy[i], x + dx[i]);
+      }
+    }
+    console.log(count);
+    count = 0;
+  }
+
+  process.exit();
+});
+```
