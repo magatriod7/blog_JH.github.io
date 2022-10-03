@@ -5,72 +5,48 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <script>
-      // function createLargeClosure() {
-      //   const largeStr = new Array(10).join("x"); //array가 1000000개인 배열을 x로 초기화
-
-      //   const lc = function largeClosure() {
-      //     return largeStr; //largeStr arr return
-      //   };
-
-      //   return lc;
-      // }
-      // const map = new WeakMap(); /// WeakMap()
-
-      // function start() {
-      //   const timer = setInterval(() => {
-      //     const lc = createLargeClosure();
-      //     map.set(lc, "##");
-      //   }, 1000); // map을 5개 만듬
-
-      //   setTimeout(function () {
-      //     clearInterval(timer);
-      //   }, 5001); // map 만들기 스톱
-      // }
-      // window.addEventListener("click", start);
-
-      function createLargeClosure() {
-        const largeObj = {
-          a: 1,
-          b: 2,
-          str: new Array(1000000).join("x"),
-        };
-
-        const lc = function largeClosure() {
-          return largeObj;
-        };
-
-        return lc;
-      }
-
-      const memo = new Map();
-      function memoize(obj) {
-        if (memo.has(obj)) {
-          console.log("Get cached result");
-          return memo.get(obj);
-        }
-
-        const compute = obj.a + obj.b;
-        console.log("Set computed result to caching map");
-        memo.set(obj, compute);
-
-        return compute;
-      }
-
-      function start() {
-        const lcObj = createLargeClosure();
-
-        const timer = setInterval(() => {
-          memoize(lcObj());
-        }, 1000);
-
-        setTimeout(function () {
-          clearInterval(timer);
-        }, 5001);
-      }
-
-      window.addEventListener("click", start);
-    </script>
   </head>
   <body></body>
+  <script>
+    function Person(name) {
+      this.name = name;
+    }
+
+    const person1 = new Person("sam");
+    const person2 = new Person("james");
+
+    //--------------- 연결되어 있는 prototype 변경 전부 변경됨
+    // console.log(person1, person2);
+    // Person.prototype.test = function () {
+    //   console.log("test");
+    //   return 0;
+    // };
+    // console.log(person1, person2);
+    //-------------
+    // console.log(person1.__proto__);
+
+    //------------------------ __proto__와 Person.prototype이 같음을 말함
+    // person1.__proto__.test = function () {
+    //   console.log("hello world");
+    //   return 0;
+    // };
+    // console.log(person1.__proto__, Person.prototype);
+    // person2.__proto__.test(); // hello world
+    //-----------------------------
+
+    //------------------------
+    person1.__proto__.test = function () {
+      console.log("no hello");
+      return 0;
+    };
+    // person1.prototype.test = function () {
+    //   console.log("hello world");
+    //   return 0;
+    // };
+
+    // console.log(person1); //
+    console.log(person1, person1.__proto__, person1.prototype);
+    person2.__proto__.test(); // hello world
+    //-----------------------------
+  </script>
 </html>
