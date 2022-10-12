@@ -17,7 +17,7 @@ TS에서는 함수의 매개변수와 return의 type을 명시할 수 있게 됩
 // 1. 이름을 붙인 함수
 function greet(name: string) {
   return 'hello' + name
-}
+}0
 
 // 2. 함수 표현식
 let greet2 = function (name: string){
@@ -48,7 +48,7 @@ let greet5 = (noname = 'charlie', name?:string) => { // ?을 통해 선택적으
 
 또한 tuple처럼 매개변수를 선택적으로 받거나 매개변수의 기본 값을 정해줄 수도 있습니다. 해당 매개변수에도 type 식별자를 이용해서 만든 type을 정해줄 수도 있습니다.
 
-## this // 잘 이해가 안됨 왜그런 것인가?
+## this
 
 JS와 같이 TS의 this는 매서드로 호출될 경우 그 앞의 객체가 this로 설정되고 화살표 함수의 경우 선언된 블록을 의미하게 됩니다.
 
