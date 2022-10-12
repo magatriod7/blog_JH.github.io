@@ -1,0 +1,172 @@
+---
+title: Typescript 정리 - 3
+date: 2022-10-10
+description: Typescript
+  - TS
+---
+
+# 클래스와 인터페이스
+
+객체지향 프로그래밍에서 클래스는 필수적인 존재일 것입니다. TS의 클래스는 기본적으로 C#에서 빌려왔지만 결국 JS로 변환해야하기 때문에 자바스크립트 표현식으로 사용해도 안전합니다.
+
+JS에서 사용할 수 없는 코드의 경우 컴파일 타임에만 존재하며 결과물인 JS에는 아무런 코드도 생성되지 않습니다. 이제 TS에서의 클래스에 대해서 이야기해봅시다.
+
+## 클래스와 상속
+
+한번 체스 게임을 만들면서 클래스에 다가가는 시간을 가집시다. 말하기 전에 클래스의 접근 한정자를 간단하게 이야기하겠습니다.
+
+public: 어디서나 접근할 수 있으며 기본적으로 주어지는 접근 수준입니다.
+protected: 이 클래스와 서브 클래스의 인스턴스에서만 접근할 수 있습니다.
+private: 이 클래스의 인스턴스에서만 접근할 수 있습니다.
+
+abstract 추상 클래스, 추상 메소드 : 추상 클래스와 추상 메소드는 반드시 상속 이후에 사용할 수 있도록 하는 메소드와 클래스입니다.
+
+```
+//  정보에 대한 type을 제한함으로써 보다 안정이 됩니다.
+// 모든 말들은 각 말의 색이 있을테고 현재 위치를 가지고 있을 것입니다. 위에서 선언한 Piece와 그 위치에 관한 정보를 추가하겠습니다.
+type Clolr = 'black' | 'White' // 체스 말의 색 흑, 백
+type File = 'A'|'B'|'C'|'D'|'E'|'F'|'G'|'H' // 체스의 알파뱃 위치
+type Rank = '1'|'2'|'3'|'4'|'5'|'6'|'7'|'8' // 체스의 숫자 위치
+
+// 말의 위치
+class Position{
+  constructor(
+    private file  : File, // private 접근 한정자를 이용하면 this.file을 자동적으로 할당하며 this를 따로 적지 않아도 됩니다.
+    private rank: Rank  //  private 한정자는 Position 인스턴스 외부에서 해당 정보를 접근할 수 없게합니다.
+  ) { }
+
+  distanceFrom(position: Position){//이동하려고 하는 위치
+    return {
+      rank: Math.abs(position.rank - this.rank),
+      file: Math.abs(position.file.charCodeAt(0) - this.file.charCodeAt(0))
+    }
+  }
+}
+
+//
+abstract class Piece{ // abstract 를 추가하여 Piece 클래스의 직접 인스턴스 생성을 막고 상속된 클래스를 통해서만 인스턴스를 생성할 수 있게 합니다.
+  protected position: Position // 인스턴스 변수 position에 protected를 선언하여 외부의 출입은 막지만 하위 인스턴스에서는 접근이 가능합니다.
+  constructor(
+    private readonly color: Color,
+    file: File,
+    rank: Rank
+  ) {
+    this.position = newPosition(file,rank) // 이부분 잘 이해가 안됨
+  }
+  moveTo(position: Position){
+    this.position = position
+  }
+  abstract canMoveTo(position: Position): boolean// 이처럼 메소드 또한 상속된 후 상속된 클래스의 인스턴스를 통해서만 접근이 가능합니다.
+}
+
+
+class King extends Piece{}
+class Queen extends Piece{}
+class Bishop extends Piece{}
+class Knight extends Piece{}
+class Rook extends Piece{}
+class Pawn extends Piece{}
+```
+
+## super
+
+super을 이용하면 하위클래스 인스턴스에서 상위 클래스 메소드에 접근이 가능해집니다. 단, 메서드에만 접근할 수 있고 프로퍼티에는 접근할 수 없습니다.
+
+## this를 반환 타입으로 사용하기
+
+this를 이용해서 보다 편하게 type을 정하는 방법이 있습니다.
+
+```
+class MutableSet extends Set{
+  add(value: number): MutableSet
+}
+```
+
+Set로부터 상속받은 저만의 클래스인 MutableSet있고 add 메서드를 사용하면 MutableSet이 반환되도록 해뒀습니다.
+이런식으로 처리해도 상관은 없지만 매서드가 많아질수록 MutableSet을 지정해줘야하는 번거로움이 있습니다.
+
+```
+class MutableSet extends Set{
+  add(value: number): this
+}
+```
+
+그런경우 this를 이용하여 자기 자신과 같은 type을 반환한다고 명시하여 보다 편하게 사용이 가능합니다.
+
+이 부분에서 this를 통해 type를 선언함을 알 수 있는데 즉, 클래스는 타입과 그 값으로 동시에 사용이 가능합니다.
+
+## 인터페이스
+
+추후 기입 예정
+
+## 클래스는 구조 기반 타입을 기반한다.
+
+```
+class Cat {
+  age(){}
+}
+
+class Dog {
+  age(){}
+}
+
+function animalAge(animal: dog){
+  animal.age()
+}
+
+let dog = new Dog
+let cat = new Cat
+
+animalAge(dog)// OK
+animalAge(cat)// OK
+```
+
+클래스는 기본적으로 구조 기반 타입을 기반으로 하고 있기 때문에 위의 경우 Cat과 Dog가 age()를 공유하고 있기 때문에 에러가 발생하지 않습니다.
+
+```
+class Cat {
+  A = 1
+  age(){}
+}
+
+class Dog {
+  private A = 1
+  age(){}
+}
+
+function animalAge(animal: dog){
+  animal.age()
+}
+
+let dog = new Dog
+let cat = new Cat
+
+animalAge(dog)// OK
+animalAge(cat)// error
+```
+
+하지만 private나 protected 필드가 존재할 경우 할당하려는 클래스나 서브클래스의 인스턴스가 아니면 할당할 수가 없습니다.
+
+## 다형성
+
+함수와 타입처럼 클래스도 제네릭 타입 매개변수 기능을 지원합니다.
+
+```
+class Example<K, V>{
+  constructor(initialKey: K, initialValue: V){}
+  get(key: K): V{}
+  set(key: K, value: V): void{}
+
+  static of<K, V>(k: K, v: V): myMap<K, V> {}// static 매서드는 클래스 수준의 제네릭을 사용할 수 없기 때문에 따로 제네릭을 선언해야합니다.
+}
+```
+
+## 믹스인
+
+추가 예정
+
+## 데코레이터
+
+추가 예정
+
+---
