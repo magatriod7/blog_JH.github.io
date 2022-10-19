@@ -1,0 +1,216 @@
+---
+title: Typescript 정리 - 4
+date: 2022-10-18
+description: Typescript
+  - TS
+---
+
+# 고급타입
+
+## 서브타입, 슈퍼타입
+
+`서브타입: 두 개의 타입 AB가 있고 B가 A의 서브타입이면 A가 필요한 곳에넌 어디든 B를 안전하게 사용할 수 있다.`
+`슈퍼타입: 두개의 타입 A와 B가 있고 B가 A의 슈퍼타입이면 B가 필요한 곳에는 어디든 A를 안전하게 사용할 수 있다.`
+
+슈퍼타입과 서브타입은 위처럼 정의할 수 있습니다. 말로 설명하면 난해할 수 있으니 사진으로 설명하겠습니다.
+
+사진 1
+
+그림을 보면 B는 A의 부분집합입니다. 이 상황에서 B는 A의 서브타입, A는 B의 슈퍼타입이라고 할 수 있습니다.
+
+예시를 들어보면 object의 종류는 무수히 많습니다. Function, array, map, set 등등 여러가지가 있을 것입니다.
+이 중 array는 object의 서브타입이고 object는 array의 슈퍼타입일 것입니다.
+
+A <: B 는 A는 B와 같거나 B의 서브타입이라는 뜻이며
+
+A >: B 는 A는 B와 같거나 B의 슈퍼타입이라는 뜻입니다.
+
+## 함수 가변성
+
+함수 A가 함수 B가 서로 같거나 적은 수의 매개변수를 가지며 다음을 만족하면 A는 B의 서브타입입니다.
+
+> 1. A의 this 타입을 따로 지정하지 않으면 A의 this >: B의 this 타입이다.
+> 2. A의 각 매개변수 >: B의 대응 매개변수이다.
+> 3. A의 반환타입 <: B의 반환 타입이다.
+
+각 B가 A의 this와 매개변수는 서브타입인데 왜 반환값은 반대일까요? 예시를 들어 설명해보겠습니다.
+
+```
+class Animal{}
+class Bird extends Animal{
+  chirp(){}
+}
+class Crow extends Bird{
+  caw(){}
+}
+
+function chirp(bird: Bird): Bird{
+  bird.chirp()
+  return bird
+}
+
+chirp(new Animal)// 에러: Animal 타입을 매개변수 Bird에 할당할 수 없음
+chirp(new Bird)
+chirp(new Crow)
+```
+
+위의 예시에서 Crow는 Bird로부터 상속받아 chrip()를 사용할 수 있지만 Animal은 chirp()를 매서드로 가지지 않아 에러가 생기게 됩니다.
+
+```
+function clone(f:(b:Bird) => Bird): void{} // 반환값에 chirp()있음
+
+function birdToAnimal(d: Bird): Animal{}//반환값에 chirp() 없음
+
+clone(birdToAnimal)// 에러
+```
+
+clone의 매개변수의 호출 시그니처가 Bird => Bird의 꼴을 가지고 있는 상황입니다. birdToAnimal은 Bird => Animal의 꼴을 가지고 있는데
+Animal은 chirp() 메서드가 있을 수도 있지만 없을 수도 있게됩니다.
+
+Animal >: Bird이므로 반환 타입이 조건 3번에 부합하지 않기 때문에 birdToAnimal은 birtTobird의 서브타입이 될 수 없어 clone의 매개변수로 대체할 수 없습니다.
+
+## 할당성
+
+할당성이란, A를 B에 할당할 수 있는지를 판단하는 규칙입니다.
+
+> 1.  A<:B
+> 2.  A는 any
+
+## 타입 넓이기
+
+let이나 var처럼 값을 바꿀 수 있는 변수를 선언하면, 그 변수의 타입이 리터럴 값에서 -> 리터럴
+값이 속한 기본 타입 으로 넓어집니다.
+
+```
+let a = 'x' // string
+var b = true // boolean
+let c = 3 // number
+const d = {x: 3} //{x: number}
+
+enum E {X,Y,Z}
+let e = E.X // E
+```
+
+값을 바꿀 수 없는 const같은 변수에서는 상황이 달라집니다.
+
+```
+const a = 3 // 3
+const b = false // false
+const c = 'x' // 'x'
+
+enum E{X,Y,Z}
+let e = E.X // E.X
+```
+
+타입을 명시하면 타입이 넓어지지 않도록 막을 수 있습니다.
+
+```
+let a: 'x' = 'x' // 'x'
+let b: 3 = 3 // 3
+var c: true = true // true
+const d: {x:3} = {x:3} // {x:3}
+```
+
+null이나 undefined로 초기화된 변수는 any 타입으로 넓혀지지만 선언 범위를 벗어나면 좁은 타입을 할당합니다.
+
+```
+function x(){
+  let a = null // any
+  a = 3 //any
+  a = 'b' //any
+  return a;
+}
+x() // string
+```
+
+### const 타입
+
+const 를 사용하면 타입 넓히기가 중지됩니다. as const를 사용할 경우 중첩된 자료구조에도 재귀적으로 적용됩니다.
+
+```
+let c = {x:3} as const // {readonly x:3}
+let e = [1, {x:2}] as const // readonly [1, {readonly x:2}]
+```
+
+### 초과 프로퍼티 확인
+
+객체의 경우 지정된 타입에서 벗어나는 프로퍼티가 생길 경우 에러처리를 합니다.
+
+```
+type Optiops = {
+  option1: string;
+  option2: string;
+  option3: string;
+};
+
+let test: Optiops = {
+  option1: "1",
+  option2: "2",
+  option3: "3",
+};
+
+let test2: Optiops = {
+  option1: "1",
+  option2: "2",
+  option3: "3",
+  option4: "3",
+}; // 지정하지 않은 option4가 있어 에러처리
+//개체 리터럴은 알려진 속성만 지정할 수 있지만 'Optiops' 형식에 'option4'이(가) 없습니다. 'option1'을(를) 쓰려고 했습니까?
+```
+
+타입에 프로퍼티를 추가하는 유연성 있는 type을 만들기 위해서는 [key: string] 등을 추가해야합니다.
+
+## 고급 객체 타입
+
+### 객체 타입의 타입 연산자
+
+key in 연산자: 대괄호 표기법을 이용해 type 객체의 내부 프로퍼티의 타입을 타입으로 사용이 가능하게 합니다.
+
+keyof 연산자: 객체 내부의 프로퍼티의 key 값을 리터럴 타입 유니온으로 가져옵니다.
+
+### 매핑된 타입
+
+TS는 매핑된 타입을 통해서 더 안전한 TYPE을 선언할 수 있습니다.
+
+```
+type Weekday = 'mon'|'tue'|'wed'|'thu'|'fri'|'sat'|'sun'
+
+let nextDay {[K in Weekday]: Day} = {
+  mon : 'tue'// error, Weekday에 속한 모든 프로퍼티를 정해줘야합니다.
+}
+```
+
+이미 선언된 객체 타입의 속성을 바꿀 수도 있습니다.
+
+```
+type Object1 = {
+  hello: number
+  world: string
+}
+
+type MyMappedType = {
+  [Key in keyof Object1]?: Object1[K]
+}// 모든 필드를 선택형으로 만듬 등
+```
+
+내장 매핑된 타입
+
+Record&lt;Keys, Values&gt; : Keys타입의 키와 Values타입의 값을 갖는 객체
+
+Partial&lt;Object&gt; : Object의 모든 필드를 선택형으로 표시
+
+Required&lt;Object&gt; : Object의 모든 필드를 필수형으로 표시
+
+Readonly&lt;Object&gt; : Object의 모든 필드를 읽기 전용으로 표시
+
+Pick&lt;Object, Keys&gt; : 주어진 Keys에 대응하는 Object의 서브타입을 반환
+
+## 조건부 타입
+
+```
+type IsString<T> = T extends string ? true : false
+```
+
+이런식으로 조건에 부합하면 true 그렇지 않으면 false를 대입하는 삼항연산자를 이용한 type도 존재합니다.
+
+---

@@ -1,0 +1,174 @@
+---
+title: 빌더 패턴과 팩토리 패턴
+date: 2022-10-18
+description: Typescript
+  - TS
+---
+
+# 팩토리 패턴
+
+팩토리 패턴은 어떤 객체를 만들지를 전적으로 팩토리에 위임하는 방법입니다.
+
+```
+type Shoe = {
+  purpose: string
+}
+class BalletFlat implements Shoe {
+  purpose = 'daning'
+}
+
+class Boot Flat implements Shoe {
+  purpose = 'woodcutting'
+}
+class BalletFlat implements Shoe {
+  purpose = 'walking'
+}
+
+let Shoe = {
+  create(type:'balletFlat' | 'boot' | 'sneaker'): Shoe{
+    switch(type){
+      case 'ballet': return new BalletFlat
+      case 'boot': return new Boot
+      case 'sneaker': return new Sneaker
+    }
+  }
+}
+```
+
+위와 같이 객체 생성을 Shoe에 전적으로 담당하면 객체 생성 부분에서
+생성된 객체의 정보가 조금씩 달라졌을 때 각각 객체를 수정하는 것이 아닌
+Shoe 객체만 수정하면 되서 보다 편한 수정이 가능합니다.
+
+# 빌더 패턴
+
+```
+class RequestBuilder{
+  private date: object | null = null
+  private method: 'get' | 'post' | null = null
+  private url: string | null = null
+
+  setMethod(method: 'get' | 'post'): this{
+    this.method: method
+    return this
+  }
+
+  setData(data: object): this{
+    this.date: data
+    return this
+  }
+
+  setURL(url: string): this {
+    this.url = url
+    return this
+  }
+  sent(){}
+}
+```
+
+빌더패턴은 this를 return함으로써
+
+> new RequestBuilder().setUrl('/sample').setMethod('get').setData('{data:1}').send()
+
+와 같이 꼬리를 무는 메서드로 사용이 가능합니다. 하지만 이렇게 사용할 경우
+send가 마지막에 나오지 않아도 실행이 될 것입니다. 한번 더 수정해보겠습니다.
+
+```
+// data, method, url이 지정되야만 send를 사용할 수 있는 함수
+class RequestBuilder{
+  private date: object | null = null
+  private method: 'get' | 'post' | null = null
+  private url: string | null = null
+
+  setMethod(method: 'get' | 'post'): this{
+    this.method: method
+    return this
+  }
+
+  setData(data: object): this{
+    this.date: data
+    return this
+  }
+
+  setURL(url: string): this {
+    this.url = url
+    return this
+  }
+  sent(){
+    let status: 'success' | 'failure';
+    if(this.url != null && this.method != null && this.data != null){
+      status = 'success'
+      console.log(status)
+      return status
+    }
+      status = 'failure'
+      console.log(status, "please fill data, url, method")
+      return this
+  }
+}
+```
+
+먼저 위와 같은 방법이 있습니다.
+
+다른 방법으로 클래스를 새로 지정하는 방법이 있습니다.
+
+```
+class RequestBuilder {
+  protected data: object | null = null;
+  protected method: "get" | "post" | null = null;
+  protected url: string | null = null;
+
+  setMethod(method: "get" | "post"): this | RequestBuilderWithMethodAndURL {
+    if (this.url != null) {
+      return new RequestBuilderWithMethodAndURL()
+        .setMethod(method)
+        .setData(this.data)
+        .setURL(this.url);
+    } // url이 이미 존재하면서 할 경우
+
+    this.method = method; // 존재하지 않을 경우 자기 자신을 반환한다.
+    return this;
+  }
+  setURL(url: string): this | RequestBuilderWithMethodAndURL {
+    if (this.method != null && url != null) {
+      return new RequestBuilderWithMethodAndURL()
+        .setMethod(this.method)
+        .setURL(url)
+        .setData(this.data);
+    } // method와 url이 정해질 경우
+    this.url = url;
+    return this;
+  }
+  setData(data: object | null): this {
+    this.data = data;
+    return this;
+  }
+  send(): void {
+    console.log("not working");
+  }
+}
+
+class RequestBuilderWithMethodAndURL extends RequestBuilder {
+  setURL(url: string): this {
+    // URL 설정
+    this.url = url;
+    return this;
+  }
+  setData(data: object | null): this {
+    // Data 설정
+    this.data = data;
+    return this;
+  }
+  setMethod(url: "get" | "post"): this {
+    // method 설정
+    this.url = url;
+    return this;
+  }
+  send(): void {
+    console.log("send");
+  }
+}
+
+new RequestBuilder().setMethod("get").setData({}).setURL("foo.com").send();
+```
+
+---
