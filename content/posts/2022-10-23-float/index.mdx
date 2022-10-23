@@ -1,0 +1,190 @@
+---
+title: float
+date: 2022-10-22
+description: float css 속성에 대해서
+tags:
+  - css
+---
+
+float는 기본적으로 이미지를 텍스트와 함께 어떻게 배치할지에 대해서 생각하면서 생기게 된 요소입니다.
+
+```
+.box2 {
+  width: 100px;
+  height: 100px;
+  background: yellow;
+}
+
+.box1 {
+  border: 1px black solid;
+}
+```
+
+사진 1
+
+기본적으로 float를 넣기 전의 두 div입니다. 원래 이미지를 다루기 위해서 만든 기능인 만큼 inline에는 당연히 사용이 가능하고
+div에도 사용시 float 속성을 띄게 됩니다.
+
+```
+body {
+  font-family: sans-serif;
+}
+
+.box2 {
+  width: 100px;
+  height: 100px;
+  background: yellow;
+  float: left;
+}
+
+.box1 {
+  border: 1px black solid;
+}
+```
+
+## 사진 2
+
+여기에 float속성을 추가하면 사진처럼 div2가 나타나게 됩니다.
+
+## 사진3
+
+float: left 대신 float: right를 적용하면 다음과 같이 오른쪽에 float 됩니다.
+
+## 사진4
+
+```
+
+.box2 {
+  width: 100px;
+  height: 100px;
+  background: yellow;
+  float: left;
+}
+
+.box1 {
+  border: 1px black solid;
+  overflow: auto;
+}
+
+```
+
+위의 경우 텍스트가 충분히 많은 상태지만 만약 텍스트가 충분하지 않은 상태에서
+float를 적용하게 된다면 위처럼 원래 요소보다 overflow가 되게 됩니다. 이 경우 float를 지정한 요소의 부모요소에 overflow:auto를 지정해 줍니다.
+
+위처럼 글을 쓰는데 사용할 수도 있지만 layout을 지정하는데 float를 사용할 수도 있습니다.
+
+## 사진 5
+
+index.html
+
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Parcel Sandbox</title>
+    <meta charset="UTF-8" />
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="box1">
+        <div class="box2 box2-1">
+          <div class="content1"></div>
+          <div class="content2"></div>
+          <div class="content3"></div>
+        </div>
+        <div class="box2 box2-2">
+          <div class="content1"></div>
+          <div class="content2"></div>
+          <div class="content3"></div>
+        </div>
+        <div class="box2 box2-3">
+          <div class="content1"></div>
+          <div class="content2"></div>
+          <div class="content3"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="src/index.js"></script>
+  </body>
+</html>
+```
+
+styles.css
+
+```
+.box2 {
+  width: 33.333333%;
+  background: yellow;
+  /* border: green 2px solid; */
+  overflow: auto;
+  float: left;
+}
+
+.box1 {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+  /* border: 1px black solid; */
+  overflow: auto;
+}
+
+.box2-1 .content1 {
+  background: tomato;
+  width: 100%;
+  height: 200px;
+}
+
+.box2-1 .content2 {
+  background: pink;
+  width: 100%;
+  height: 300px;
+}
+.box2-1 .content3 {
+  background: blanchedalmond;
+  width: 100%;
+  height: 600px;
+}
+.box2-2 .content1 {
+  background: red;
+  width: 100%;
+  height: 100px;
+}
+
+.box2-2 .content2 {
+  background: blue;
+  width: 100%;
+  height: 140px;
+}
+.box2-2 .content3 {
+  background: green;
+  width: 100%;
+  height: 200px;
+}
+.box2-3 .content1 {
+  background: skyblue;
+  width: 100%;
+  height: 550px;
+}
+.box2-3 .content2 {
+  background: wheat;
+  width: 100%;
+  height: 100px;
+}
+.box2-3 .content3 {
+  background: cadetblue;
+  width: 100%;
+  height: 530px;
+}
+* {
+  box-sizing: border-box;
+}
+```
+
+layout을 자유롭게 사용할 수 있다는 것을 보여주는 예시입니다.
+
+---
+
+[참조1](http://www.tcpschool.com/css/css_position_float)
+[참조2](https://developer.mozilla.org/ko/docs/Web/CSS/float)

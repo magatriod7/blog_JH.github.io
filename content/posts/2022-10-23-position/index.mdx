@@ -1,0 +1,258 @@
+---
+title: position
+date: 2022-10-22
+description: position css 속성에 대해서
+tags:
+  - css
+---
+
+position에 대해서 설명하겠습니다.
+
+1. static
+
+static은 일반적인 normal flow에 의거하여 요소를 배치합니다. 기본값입니다.
+
+2. relative
+
+요소를 일반적인 문서 흐름대로 배치하고 z-index가 auto가 아닐 경우 쌓임 맥락을 생성하게 됩니다.
+
+relative도 top left bottom right를 이용해서 위치 설정이 가능한데 이 경우
+relative의 원래 위치에 relative 요소가 있고 viewport에만 움직인 것처럼 보인다고 생각하는게 편합니다.ㅋ
+
+index.html
+
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Parcel Sandbox</title>
+    <meta charset="UTF-8" />
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="box1">
+        <div class="box3">box3</div>
+        <div class="box3 second">box3</div>
+        <div class="box3">box3</div>
+      </div>
+    </div>
+
+    <script src="src/index.js"></script>
+  </body>
+</html>
+```
+
+style.css
+
+```
+* {
+  box-sizing: border-box;
+}
+.box1 {
+  border: 1px solid black;
+  width: 300px;
+  height: 300px;
+  position: relative;
+}
+.box2 {
+  border: 1px solid black;
+  width: 200px;
+  height: 200px;
+}
+.box3 {
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: 0px;
+  position: relative;
+}
+.second {
+  left: 50px;
+  top: 50px;
+}
+
+```
+
+사진 4
+
+3. absolute
+
+요소를 일반적인 문서 흐름에서 제거하고, 페이지 레이아웃에 공간도 배정하지 않습니다. 단, 조상 중 위치 지정 요소가 없다면 초기 컨테이닝 블록을 기준으로 삼습니다.
+
+absolute를 지정할 경우 초기 위치를 주변 컴포넌트가 인식하는
+relative와는 달리 주변 컴포넌트와 다르게 absolute는 별개의 쌓임 맥락을 생성하게 됩니다.
+즉, 다른 형제 컴포넌트 사이의 레이아웃 결정에서 완전하게 벗어나게 됩니다.
+
+3-1. absolute와 기준
+
+absolute는 위치 지정 요소를 상위 컴포넌트에서 지정해줘야합니다.
+
+index.html
+
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Parcel Sandbox</title>
+    <meta charset="UTF-8" />
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="box1">
+        <div class="box2">
+          <div class="box3">box3</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="src/index.js"></script>
+  </body>
+</html>
+
+```
+
+style.css
+
+```
+.box1 {
+  border: 1px solid black;
+  width: 300px;
+  height: 300px;
+}
+.box2 {
+  border: 1px solid black;
+  width: 200px;
+  height: 200px;
+}
+.box3 {
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+```
+
+사진 1
+
+사진 1과 같이 배치된 상태에서 absolute를 box3에 적용해보겠습니다.
+
+```
+.box1 {
+  border: 1px solid black;
+  width: 300px;
+  height: 300px;
+}
+.box2 {
+  border: 1px solid black;
+  width: 200px;
+  height: 200px;
+}
+.box3 {
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 0px;
+}
+```
+
+사진2
+
+위치 지정요소가 없어 viewport 기준으로 위치가 잡히게 됩니다.
+
+style.css
+
+```
+.box1 {
+  border: 1px solid black;
+  width: 300px;
+  height: 300px;
+}
+.box2 {
+  border: 1px solid black;
+  width: 200px;
+  height: 200px;
+}
+.box3 {
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 0px;
+}
+```
+
+이번에는 box1에 position:relative를 지정해보겠습니다.
+
+style.css
+
+```
+.box1 {
+  border: 1px solid black;
+  width: 300px;
+  height: 300px;
+  position: relative;
+}
+.box2 {
+  border: 1px solid black;
+  width: 200px;
+  height: 200px;
+}
+.box3 {
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 0px;
+}
+```
+
+사진3
+
+위지 지정요소가 있는 box1을 기준으로 absolute가 배치되었습니다.
+
+이처럼 absolute를 사용할 경우 상위 컴포넌트(왠만하면 바로 위)에 위치 지정요소를
+적용해 주는것이 좋습니다. relative가 아닌 sticky, fixed도 가능합니다.
+
+4. fixed
+
+fixed는 사용자의 viewport 기준으로 일정한 위치에 존재하게 됩니다. 전체 페이지의 크기가 커서 스크롤을 할 경우라도
+사용자의 window의 지정된 구역에서 항상 존재할 것입니다.
+
+5. sticky
+
+요소를 일반적인 문서 흐름에 따라 배치하고
+테이블 관련 요소를 포함해 가장 가까운
+스크롤 되는 조상과
+표 관련 요소를 기준으로
+top, right, bottom, left의 값에 따라 오프셋을 적용합니다.
+오프셋은 다른 요소에는 영향을 주지 않습니다.
+
+위의 경우 MDN의 공식 문서에 나와있는 정보지만 바로 알아듣기는 힘든 것 같습니다.
+그림으로 설명해보겠습니다.
+
+그림5
+
+스크롤을 할 경우 sticky의 본래 요소보다 스크롤이 내려갈 경우 가까운 스크롤 가능한
+조상이 뷰포트에 나오는 위치 기준으로 top,botton,left,right를 지정할 수 있습니다.
+
+---
+
+[참조1](http://www.tcpschool.com/css/css_position_float)
+[참조2](https://developer.mozilla.org/ko/docs/Web/CSS/float)

@@ -1,0 +1,385 @@
+---
+title: z-index와 쌓임맥락
+date: 2022-10-22
+description: z-index와 쌓임맥락
+tags:
+  - css
+---
+
+## 1. z-index가 없는 경우의 쌓임.
+
+만약 z-index가 지정되지 않을 경우 모든 요소들은 다음 순서대로 아래부터 위로 쌓입니다.(Y축이 아닌 Z축 쌓임입니다.)
+
+1. 뿌리 요소의 배경과 테두리
+
+2. 자식 요소들은 HTML에서 등장하는 순서대로
+
+3. position이 지정된 자식 엘리먼트들은 HTML에서 등장하는 순서대로
+
+다음은 예제입니다.
+
+사진1
+
+```
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <style type="text/css">
+      div {
+        font: 12px Arial;
+      }
+
+      span.bold {
+        font-weight: bold;
+      }
+
+      #normdiv {
+        height: 70px;
+        border: 1px dashed #999966;
+        background-color: #ffffcc;
+        margin: 0px 50px 0px 50px;
+        text-align: center;
+      }
+
+      #reldiv1 {
+        opacity: 0.7;
+        height: 100px;
+        position: relative;
+        top: 30px;
+        border: 1px dashed #669966;
+        background-color: #ccffcc;
+        margin: 0px 50px 0px 50px;
+        text-align: center;
+      }
+
+      #reldiv2 {
+        opacity: 0.7;
+        height: 100px;
+        position: relative;
+        top: 15px;
+        left: 20px;
+        border: 1px dashed #669966;
+        background-color: #ccffcc;
+        margin: 0px 50px 0px 50px;
+        text-align: center;
+      }
+
+      #absdiv1 {
+        opacity: 0.7;
+        position: absolute;
+        width: 150px;
+        height: 350px;
+        top: 10px;
+        left: 10px;
+        border: 1px dashed #990000;
+        background-color: #ffdddd;
+        text-align: center;
+      }
+
+      #absdiv2 {
+        opacity: 0.7;
+        position: absolute;
+        width: 150px;
+        height: 350px;
+        top: 10px;
+        right: 10px;
+        border: 1px dashed #990000;
+        background-color: #ffdddd;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <br /><br />
+
+    <div id="absdiv1">
+      <br /><span class="bold">DIV #1</span> <br />position: absolute;
+    </div>
+
+    <div id="reldiv1">
+      <br /><span class="bold">DIV #2</span> <br />position: relative;
+    </div>
+
+    <div id="reldiv2">
+      <br /><span class="bold">DIV #3</span> <br />position: relative;
+    </div>
+
+    <div id="absdiv2">
+      <br /><span class="bold">DIV #4</span> <br />position: absolute;
+    </div>
+
+    <div id="normdiv">
+      <br /><span class="bold">DIV #5</span> <br />no positioning
+    </div>
+  </body>
+</html>
+```
+
+position이 지정된 요소들이 static 요소보다 앞에 있는 것을 확인하면서 2번과 3번 규칙을 따름을 확인할 수 있습니다.
+
+## floating 요소의 쌓임
+
+floating 요소들은 position이 지정된 블록과 지정되지 않은 블록 사이에 쌓입니다.
+
+1. 뿌리 요소의 배경와 테두리
+
+2. 자식 요소들은 HTML에서 등장하는 순서대로
+
+3. floating 엘리먼트
+
+4. inline 자식 요소 보통의 흐름대로
+
+5. position이 지정된 자식 엘리먼트들은 HTML에서 등장하는 순서대로
+
+```
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <style type="text/css">
+      div {
+        font: 12px Arial;
+      }
+
+      span.bold {
+        font-weight: bold;
+      }
+
+      #absdiv1 {
+        opacity: 0.7;
+        position: absolute;
+        width: 150px;
+        height: 200px;
+        top: 10px;
+        right: 140px;
+        border: 1px dashed #990000;
+        background-color: #ffdddd;
+        text-align: center;
+      }
+
+      #normdiv {
+        /*opacity: 0.7;*/
+        height: 100px;
+        border: 1px dashed #999966;
+        background-color: #ffffcc;
+        margin: 0px 10px 0px 10px;
+        text-align: left;
+      }
+
+      #flodiv1 {
+        opacity: 0.7;
+        margin: 0px 10px 0px 20px;
+        float: left;
+        width: 150px;
+        height: 200px;
+        border: 1px dashed #009900;
+        background-color: #ccffcc;
+        text-align: center;
+      }
+
+      #flodiv2 {
+        opacity: 0.7;
+        margin: 0px 20px 0px 10px;
+        float: right;
+        width: 150px;
+        height: 200px;
+        border: 1px dashed #009900;
+        background-color: #ccffcc;
+        text-align: center;
+      }
+
+      #absdiv2 {
+        opacity: 0.7;
+        position: absolute;
+        width: 150px;
+        height: 100px;
+        top: 130px;
+        left: 100px;
+        border: 1px dashed #990000;
+        background-color: #ffdddd;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <br /><br />
+
+    <div id="absdiv1">
+      <br /><span class="bold">DIV #1</span> <br />position: absolute;
+    </div>
+
+    <div id="flodiv1">
+      <br /><span class="bold">DIV #2</span> <br />float: left;
+    </div>
+
+    <div id="flodiv2">
+      <br /><span class="bold">DIV #3</span> <br />float: right;
+    </div>
+
+    <br />
+
+    <div id="normdiv">
+      <br /><span class="bold">DIV #4</span> <br />no positioningno
+      positioningno positioningno positioningno positioningno positioningno
+      positioningno positioningno positioningno positioningno positioningno
+      positioningno positioningno positioningno positioningno positioningno
+      positioningno positioningno positioningno positioningno positioningno
+      positioningno positioningno positioningno positioningno positioningno
+      positioningno positioning
+    </div>
+
+    <div id="absdiv2">
+      <br /><span class="bold">DIV #5</span> <br />position: absolute;
+    </div>
+  </body>
+</html>
+```
+
+div2와 div3가 범위를 벗어났지만 float된 요소는 부모의 테두리와 크기에 기본적으로는
+영향을 주지 않습니다. 이 경우 부모 요소에 overflow:auto를 추가하면 float된 요소를 박스 안에 감쌀 수도 있습니다.
+
+### 3. z-index를 적용한 쌓임
+
+z-index를 사용하기 위해서는 position을 지정하고 z-index 속성을 지정해야만 합니다.
+z-index는 높을수록 위에 쌓이게 되며 음수도 사용할 수 있습니다.
+
+```
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <style type="text/css">
+      div {
+        padding: 10px;
+        opacity: 0.7;
+        text-align: center;
+        background-color: yellow;
+      }
+
+      strong {
+        font-family: sans-serif;
+      }
+
+      #abs1 {
+        z-index: 5;
+        position: absolute;
+        width: 150px;
+        height: 350px;
+        top: 10px;
+        left: 10px;
+        border: 1px dashed #900;
+        background-color: #fdd;
+      }
+
+      #rel1 {
+        z-index: 3;
+        height: 100px;
+        position: relative;
+        top: 30px;
+        border: 1px dashed #696;
+        background-color: #cfc;
+        margin: 0px 50px 0px 50px;
+      }
+
+      #rel2 {
+        z-index: 2;
+        height: 100px;
+        position: relative;
+        top: 15px;
+        left: 20px;
+        border: 1px dashed #696;
+        background-color: #cfc;
+        margin: 0px 50px 0px 50px;
+      }
+
+      #abs2 {
+        z-index: 1;
+        position: absolute;
+        width: 150px;
+        height: 350px;
+        top: 10px;
+        right: 10px;
+        border: 1px dashed #900;
+        background-color: #fdd;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="abs1">
+      <strong>DIV #1</strong>
+      <br />position: absolute; <br />z-index: 5;
+    </div>
+
+    <div id="rel1">
+      <strong>DIV #2</strong>
+      <br />position: relative; <br />z-index: 3;
+    </div>
+
+    <div id="rel2">
+      <strong>DIV #3</strong>
+      <br />position: relative; <br />z-index: 2;
+    </div>
+
+    <div id="abs2">
+      <strong>DIV #4</strong>
+      <br />position: absolute; <br />z-index: 1;
+    </div>
+
+    <div id="sta1">
+      <strong>DIV #5</strong>
+      <br />no positioning <br />z-index: 8;
+    </div>
+  </body>
+</html>
+```
+
+결국 position 층이 가장 위에 있고 static 층은 서로 겹칠 일이 없기 때문에 position과 z-index는 같이 있어야 z-index가 작동합니다.
+
+### 쌓임 맥락(stacking context)
+
+쌓임 맥락은 결국 css 속성에 따라서 Z축을 사용한 3차원 공간을 생성하는 것이라고 생성하면 됩니다.
+쌓임 맥락을 조정 할 수 있는 z-index는 결국 형제요소를 비교해서 어떤 쌓임 맥락을 가장 위에 둘지 정하는 것을 한번 생각해주시기 바랍니다.
+
+형제요소끼리 비교한다는 것은 부모 요소도 부모 요소만의 쌓임 맥락을 가지고 있음을 나타내며
+쌓임 맥락 내부에 다른 쌓임 맥락을 가지는 계층 구조를 가지게 됩니다.
+
+다음은 쌓임 맥락을 생성하는 css 속성들입니다.
+
+문서의 루트 요소. (<html>)
+
+> position이 absolute 또는 relative이고, z-index가 auto가 아닌 요소.
+> position이 fixed 또는 sticky인 요소. (sticky는 모든 모바일 브라우저에서는 해당하지만 구형 데스크톱 브라우저에서는 해당하지 않음)
+> 플렉스(flexbox (en-US)) 컨테이너의 자식 중 z-index가 auto가 아닌 요소.
+> 그리드(grid) 컨테이너의 자식 중 z-index가 auto가 아닌 요소.
+> opacity가 1보다 작은 요소. (불투명도 명세 참고)
+> mix-blend-mode가 normal이 아닌 요소.
+> 다음 속성 중 하나라도 none이 아닌 값을 가진 요소.
+>
+> > transform
+> > filter
+> > perspective (en-US)
+> > clip-path
+> > mask / mask-image (en-US) / mask-border (en-US)
+> > isolation이 isolate인 요소.
+> > -webkit-overflow-scrolling이 touch인 요소.
+> > will-change의 값으로, 초깃값이 아닐 때 새로운 쌓임 맥락을 생성하는 속성을 지정한 요소.
+> > contain이 layout, paint, 또는 둘 중 하나를 포함하는 값(strict, content 등)인 요소.
+
+## 요약
+
+쌓임 맥락 순서
+
+1. 뿌리 요소의 배경와 테두리
+
+2. 자식 요소들은 HTML에서 등장하는 순서대로
+
+3. floating 엘리먼트
+
+4. inline 자식 요소 보통의 흐름대로
+
+5. position이 지정된 자식 엘리먼트들은 HTML에서 등장하는 순서대로
+
+---
+
+[참조1](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index)
