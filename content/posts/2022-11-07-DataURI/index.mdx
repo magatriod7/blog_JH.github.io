@@ -1,0 +1,53 @@
+---
+title: Data URI란?
+date: 2022-11-07
+description: Data URI
+tags:
+---
+
+Data URI란?
+
+Data URI는 저희가 기존의 방식처럼 HTTP 통신을 이용해서 Data를 받아오는 것이 아닌 데이터 자체를 암호화하여 inline으로 데이터를 처리할 수 있는 방법입니다.
+
+```
+data:[<mediatype>][;base64],<data>
+```
+
+위는 Data URI의 형식입니다.
+
+mediatype는 mime 타입을 가지게 되며 기본 값으로는 text/plain;charset=US-ASCII. 즉, text 값을 가지게 됩니다.
+
+만약 mime 타입이 text가 아닐 경우 base64 형식으로 인코딩을 해줄 필요가 있습니다.
+
+제가 들 예시의 경우 png 파일이지만 사실 ttf와 같은 font 파일이나 mime 형식에만 맞으면 모든 파일이 업로드 가능해집니다.
+
+```
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4QkeCyss5OdeMQAABRxJREFUWMPtl3lsFFUYwH9vZmd3Zq92t9Bu6RYKbUVo5FKglEMOOQVUkGAiYGKMoonGxCAxEDRqgoRASFBAIvEIpkIAEVIMAQFRNEBAwHIUikBZkIa7m9LdmdkZ/ygUF2i75Qgx8Ute8uYd3/fLvO94T9ACWbZigyctEKyRZUWEcsJg20nzWT6J87WCE5VHdhkxvd/k8UPM5nQKWigDBw2VFy5fZ8ZjdXi8/oZxlwN0E86dPc3A7u1T1iu1FGDsxJecejyOYehJ4w5JgABd11ukr8UA2NxXkXjI8j/Afw9ACPFwAULhtqqmuVE1T9J4zLSRBASCGcz4aJ76wAC8Pt/xvyor0DR30njCgvZBGV96kKKuPcc8EIDS9dtLOhZ1CaSlB7Ht2xNCddRCwiKnXd7KAf2GyKnolFM1PnLU89LQMc+eMqpPUJTfDs3W8QgzqQnDICfDhepNIyuvcO+qb5dVNKfXkSrApNffnODObEOfUgFVjR/xmj4GM7/fx6IBrdemUmtSOoIXXnzVmZ9f8N3Qb/ajFeajKTTaxu1wsHZSZ+xAG1Zs2DHqvgCMn/LyW6cNxa5VfWA1vVZzCaJCZXrZYUKZrcvuGWDajNn+vPb5cyesOia03I4pHdfgLbB4XCF1vjaUlv06/J4A+j81Yta2s3VIXh+2Q0maM2suYVw4g23qSVERk2Sygn5mbawgHMpcf9cAH8z5LDMrt+070zZFcGblJpVis+YSRvVJzMvVxE6UJ2VICXhuq8GHw9pyUQ0py9f9POKuAEr6Pzn3ywPnkfxuhD89+Vqg1yV/W8nOsTuqUJzfivc3H6V9OHtNiwE+Wfh1B61VaMqSfTXIviAkbonf9EyQ6rfLviBCSlbllmH2foOpxTlEHJnaV6s3Pd0igJKS4kUfb69CqDJKdu7tRcmhIFVfQNECSHrijhenOYcUpvYKMfOnYzzaIa80ZYD5n5d2rXWlDd94FmRPGnYjd1sregW7Nop19dId590aLD1m8srj2Rwjw7e0tGx0SgD9insumb4lApKJktMhlRrd6PXxtV2Cd/vnMGtLJT2KOi1sFmDBFyv6nkx4ig/USMgeP9jJym3bxtbjxHduBZeKnBUmceYk+p+77wihumQ2RhJM7pbNIcOTt2DZykFNvgt2Hjy1+o1tF8ftuWyiFXQDWWkwbF78G6FqGLt+QenYFavmMomqSpQuvUlUR5D8AUjzI2RHvZNeF6ed4MoEmd6L/uDTgRlrehW1G99oMfIqjsF7zuhI6W5QlIbUGz9Zjm0aAChP9MX4fStyKIyz9yD0vTuQA62wVAfWpXP1wIaO0joMwFVbpvyyRTu/G68iD26yGhpmwo8kIxQ1KfHcMA5gXYuiDhyNcNVXRW3wWOy6a8QiR26uiV+7+WqS4HiNhVd1oCcsf5M+IJxKRciXwDJiCPmWuL/RD2Q2GG/Yp7lxZLS5ueZf/bgJnQMy1/Q6JIdS0STAwcOVi+cPK8COmeiRE4jr/0hpHUbN74ZW2APJ5b6jwynBEGpB/RpZ8wJQF4N5XQxOX4wy/JFsyo9ULm72cbp558FD5XFfp7c3R8ChQEYIoXoQLg2hOBGKhG3Vx5mwwbSp95U4pHksOnhsCvyC7unwXpHEZzuqiFsyXZxXDw8tLuqc0ut45Y+/zXmssO0zuyPR/GjcclwPhXqrloXkdIHThS1JBCSLXA+EvRK6BbEEmLbAjOvsqY6bAwrSj5cfPfXDxJEl02+18w8hWMOkl9o05QAAAABJRU5ErkJggg==
+" />
+```
+
+위의 예시입니다. PNG 파일을 디코딩할 경우 다음과 같은 사진이 나타날 것입니다.
+
+![image](./image.png)
+
+Data Uri를 사용할 경우 캐싱을 하지 않고 base64 형식으로 인코딩하면서 원본 파일보다 그 크기가 약 1.3배 정도로 커집니다. 또한 너무 큰 용량의 파일이나 이미지의 경우 제대로 처리를 할 수 없을 수도 있습니다.
+
+위의 예시를 보면 알 수 있듯이 가독성이 썩 그리 좋은 편은 아닙니다.
+
+그렇다면 Data Uri를 언제 사용할 수 있을까요?
+
+먼저 Data Uri의 형식을 생각해봅시다. 외부 URL을 이용해서 렌더링을하는 만큼 해당 정보가 외부 요청 없이 진행되기 때문에 첫 로딩 때 더 빠른 렌더링이 가능하게 됩니다.(물론 캐싱으로 인한 반복적인 상황에서는 그렇지 않을 수도 있습니다.)
+
+로고와 같이 작고 자주 쓰이는 이미지는 첫 전체 렌더링 최적화 지수를 결정하는 FID(first Contentful Paint)를 최적화시키는 효과를 가질 수 있을 것입니다.
+
+두번째로는 아무래도 외부 URL을 이용해서 이미지를 렌더링 할 경우 외부 URL이 손상될 수도 있는데 Data Uri는 이 부분에서 안전합니다.
+
+세번째로는 Data Uri는 구버전의 브라우저에서도 사용이 쉽습니다.
+
+[참고1](https://en.wikipedia.org/wiki/Data_URI_scheme)
+
+[참고2](https://d0gf00t.tistory.com/15)
+
+[참고3](https://synaptiklabs.com/posts/what-is-a-data-uri-and-how-do-i-use-it/)
+
+[참고4](https://shubamba.tistory.com/58)
