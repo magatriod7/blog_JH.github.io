@@ -1,0 +1,152 @@
+---
+title: 리액트 디자인패턴 3. HOC pattern
+date: 2022-12-05
+description: 리액트
+tags:
+  - React
+---
+
+HOC 패턴은 리액트 공식문서에서도 다루는 내용이지만 리액트 API는 아닌 일종의 디자인 패턴입니다.
+
+higher-order component, 즉 HOC 패턴은 컴포넌트를 매개변수로 받고 새로운 컴포넌트를 반환하는 함수입니다.
+
+컴포넌트가 props를 받아 UI로 나타내는 것과는 달리 HOC는 컴포넌트를 새로운 컴포넌트로 반환합니다.
+
+컴포넌트는 리액트에서 코드 재사용의 기본 단위입니다. 하지만 상황에 따라서 코드 재사용이 힘들게 될 수 도 있습니다.
+
+CommentList
+
+```
+class CommentList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.state = {
+      // "DataSource" 는 글로벌 데이터 소스입니다.
+      comments: DataSource.getComments()
+    };
+  }
+
+  componentDidMount() {
+    // 변화감지를 위해 리스너를 추가합니다.
+    DataSource.addChangeListener(this.handleChange);
+  }
+
+  componentWillUnmount() {
+    // 리스너를 제거합니다.
+    DataSource.removeChangeListener(this.handleChange);
+  }
+
+  handleChange() {
+    // 데이터 소스가 변경될때 마다 comments를 업데이트합니다.
+    this.setState({
+      comments: DataSource.getComments()
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        {this.state.comments.map((comment) => (
+          <Comment comment={comment} key={comment.id} />
+        ))}
+      </div>
+    );
+  }
+}
+```
+
+BlogPost
+
+```
+class BlogPost extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.state = {
+      blogPost: DataSource.getBlogPost(props.id)
+    };
+  }
+
+  componentDidMount() {
+    DataSource.addChangeListener(this.handleChange);
+  }
+
+  componentWillUnmount() {
+    DataSource.removeChangeListener(this.handleChange);
+  }
+
+  handleChange() {
+    this.setState({
+      blogPost: DataSource.getBlogPost(this.props.id)
+    });
+  }
+
+  render() {
+    return <TextBlock text={this.state.blogPost} />;
+  }
+}
+```
+
+위의 CommentList와 BlogPost는 DataSource에서 서로 다른 메서드를 호출하고 다른 렌더링을 보여줍니다. 하지만 componentDidMount, componentWillUnmount, handleChange() 부분의 구성이 동일합니다.
+
+만약 위와 같이 구조를 동일시하지만 DataSource에서 다른 메서드로 다른 data를 이용하고 다른 렌더링을 보여주는 경우가 많아진다면 HOC를 사용하는 것이 좋습니다.
+
+```
+// 이 함수는 컴포넌트를 매개변수로 받고..
+function withSubscription(WrappedComponent, selectData) {
+  // ...다른 컴포넌트를 반환하는데...
+  return class extends React.Component {
+    constructor(props) {
+      super(props);
+      this.handleChange = this.handleChange.bind(this);
+      this.state = {
+        data: selectData(DataSource, props)
+      };
+    }
+
+    componentDidMount() {
+      // ... 구독을 담당하고...
+      DataSource.addChangeListener(this.handleChange);
+    }
+
+    componentWillUnmount() {
+      DataSource.removeChangeListener(this.handleChange);
+    }
+
+    handleChange() {
+      this.setState({
+        data: selectData(DataSource, this.props)
+      });
+    }
+
+    render() {
+      // ... 래핑된 컴포넌트를 새로운 데이터로 랜더링 합니다!
+      // 컴포넌트에 추가로 props를 내려주는 것에 주목하세요.
+      return <WrappedComponent data={this.state.data} {...this.props} />;
+    }
+  };
+}
+```
+
+위와 같이 렌더링 할 WrappedComponent와 데이터를 정하는 selectData를 받아 새로운 컴포넌트를 반환하게 됩니다.
+
+위의 경우
+
+```
+const CommentListWithSubscription = withSubscription(
+  CommentList,
+  (DataSource) => DataSource.getComments()
+);
+
+const BlogPostWithSubscription = withSubscription(
+  BlogPost,
+  (DataSource, props) => DataSource.getBlogPost(props.id)
+);
+```
+
+위의 방법을 통해서 동일한 구조를 가지고 다른 데이터와 렌더링을 반환하는 컴포넌트를 구현할 수 있습니다.
+
+---
+
+https://reactjs.org/docs/higher-order-components.html
