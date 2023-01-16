@@ -1,0 +1,290 @@
+---
+title: 주석에 관하여.
+date: 2023-01-16
+description: 주석에 관한 클린코드
+tags:
+  - cleanCode
+---
+
+`우선 이 글이 Clean Code를 읽고 생각한 주석에 관한 글임을 밝힙니다.`
+
+여러분들도 프로그래밍을 하면서 주석을 여러번 사용해봤을겁니다. 주석은 보통 코드를 바로 알아보기 힘든 경우 글을 읽고 해당 코드가 어떻게 동작하는지를 알 수 있는 지표로 사용되는 경우가 대부분이며 몇몇 경우는 왜 이런식으로 코드를 짠지를 나타내는 경우도 있을 것입니다.
+
+해당 책 cleanCode는 말합니다.
+
+`주석은 항상 실패를 의미한다.`
+
+개인적으로는 상당히 충격적인 말이었습니다. 주석이 왜 실패를 의미할까에 대해서 생각을 해보고 제가 내린 결론은 결국 잘 짜여진 코드는 주석이 딱히 필요하지 않다는 것입니다.
+
+예를 들어보겠습니다.
+
+```
+if(employee.age > 65 && employee.workedYear > 20 && employee.childNum > 1){ // 직원이 복지를 받을 수 있는지를 판단한다.
+  ...
+}
+
+if(employee.isEligibleForBenefit()){
+  ...
+}
+```
+
+직원의 상태에 따라 복지를 주는지 정하는 위의 코드들의 경우 과연 어떤게 더 편할까요?
+결국 해당 코드가 작동하기 위해서는 해당 조건에 부합하는지만 알면 됩니다. 이를 보다 편하게 살펴보기 위해서 주석을 사용한 것이지요.
+이 코드를 다시 사용할 경우 과연 저희가 해당 코드의 조건을 세세하게 알 필요 있을까요?
+
+일단 저는 없다고 생각합니다. 이를 해결하기 위해서 employee 내부 메소드의 이름을 잘 지어서 해당 if 문의 조건문으로 사용을 하면 메소드의 이름만 보고 결과를 알 수 있을 것입니다.
+
+한번 나쁜 주석들을 예시로 보면서 주석을 어떻게 다는 것이 좋을지에 대해서 생각해봅시다.
+
+```
+if(people.gender === 'man'){ // 남자면 군대에 간다.
+  if(people.health === 'good'){ // 건강해야 군대에 간다.
+    goArmy(people); // 군대에 갔다.
+  }
+} // 남자면서 건강해야 군대에 간다.
+```
+
+간단한 예시를 들어봤습니다. 군대에 갈 조건을 둔 if문입니다. 간단한 코드에 여러개의 주석이 달려 있네요. 그저 코드의 작동 순서를 중얼거릴뿐인 반복적인 주석입니다.
+
+```
+if(people.gender === 'man'){
+  if(people.health === 'good'){
+    goArmy(people);
+  }
+}
+```
+
+이번에는 주석을 없에봤습니다. 과연 어떤가요? 주석이 없다고 보기 힘들어지나요? 아니면 오히려 깔끔해지나요? 저의 경우 깔끔하다고 생각합니다.
+
+하지만 이런 생각을 할 수도 있을겁니다.
+
+`간단한 함수는 그렇다 치는데 만약 복잡한 함수의 경우 주석이 없으면 어떻게 할까요?`
+
+물론 그럴 수도 있지만... 이런 경우는 해결책은 간단합니다.
+
+`주석이 필요 없는 알아보기 쉬운 함수를 짜면 됩니다.`
+
+```
+if(people.gender === 'man'){ // 남자면서
+  if(people.health === 'good'){ // 건강하다면
+    if(people.type === 'army'){ // 육군을 가고 싶은 경우
+      if(army.isExist(people.wantPlace)){
+        goArmy{people};
+      } else {
+        throw '해당 육군 부대가 없습니다.'
+      }
+    }
+    else if(people.type === 'navy'){// 해군을 가고 싶은 경우
+      if(navy.isExist(people.wantPlace)){
+        goNavy{people};
+      } else {
+        throw '해당 해군부대가 없습니다.'
+      }
+    }
+    else if(people.type === 'airForce'){ // 공군을 가고 싶은 경우
+    // 2022-08-11 이장훈이 추가함.
+      if(ariForce.isExist(people.wantPlace)){
+        goAirForce{people};
+      } else {
+        throw '해당 공군부대가 없습니다.'
+      }
+    }
+    //else if(people.type === 'police'){}
+  } // if(people.gender ==='man' && people.health ==='good')
+}
+```
+
+위의 경우 확실히 주석이 없으면 아마 알아보기 힘들지도 모릅니다. 하지만 앞서 말했듯이 주석이 필요하다는 것은 이미 실패한 코드입니다. 한번 코드를 이렇게 바꿔볼까요.
+
+```
+if(isPeopleQulifiedToMilitary(people)){
+  chooseTypeAndGoMilitary(people)
+}
+
+function isPeopleQulifiedToMilitary (people) {
+  if(people.health ==='good' && people.gender === 'man'){
+    return true;
+  }
+}
+
+function chooseTypeAndGoMilitary (people) {
+  switch(people.type){
+    case 'army':
+      checkIsExistGoArmy(people)
+    case 'navy':
+      checkIsExistGoNavy(people)
+    case 'airForce':
+      checkIsExistGoAirforce(people)
+  }
+}
+
+function checkIsExistGoArmy(people) {
+  if(army.isExist(people.wantPlace)){
+    goArmy{people};
+  } else {
+    throw '해당 육군 부대가 없습니다.'
+  }
+}
+
+function checkIsExistGoNavy(people) {
+  if(navy.isExist(people.wantPlace)){
+    goNavy{people};
+  } else {
+    throw '해당 해군 부대가 없습니다.'
+  }
+}
+
+function checkIsExistGoAirforce(people) {
+  if(airForce.isExist(people.wantPlace)){
+    goAirForce{people};
+  } else {
+    throw '해당 공군 부대가 없습니다.'
+  }
+}
+```
+
+해당 함수를 리펙터링 해봤습니다. 무엇을 어떻게 처리했는지 살펴볼까요?
+
+### 중얼거리고 반복적인 주석
+
+먼저 해당 주석들입니다.
+
+```
+// 남자면서
+// 건강하면서
+```
+
+해당 주석은 결국 군대에 가기 위한 조건을 의미합니다. 프로그래밍을 한 당사자가 이 코드를 보면 그냥 넘어가겠지만 만약 제 3자가 본다고 생각합시다. 물론 주석을 보고 이 조건이 뭔지를 이해는 하겠다만 해당 조건을 세세하게 알 필요가 있을까요? 여기서 흔히 리펙터링 관련 이야기를 할 때 말하는 냄새가 스멀스멀 올라오지 않나요?
+
+이와 같은 조건들을 하나로 묶은 후 최종적인 조건을 반환하는 함수로 나타내면 더 보기 쉬을 것입니다. 조건을 선언적으로(세세하게 알 필요 없이 적당히 사용하는 정도로 이해하면 될 것입니다.) 사용해봅시다.
+
+isPeopleQulifiedToMilitary() 라는 함수가 조건문에 있으면 제 3자가 볼 경우 '아! 이 코드는 People이 Military에 갈 조건이구나!'하고 이해할 수 있습니다. 읽기도 쉽겠네요.
+
+결국 코드의 동작 조건을 중얼거리기만하고 이미 일어난 방향을 반복해서 말할 그런 앵무새같은 주석을 치울 수 있겠네요.
+
+### 닫는 태그에 사용되는 주석
+
+```
+// if(people.gender ==='man' && people.health ==='good')
+```
+
+다음은 닫는 태그입니다. 저희들이 함수의 깊이를 가시적으로 쉽게 보기 위해 보통 들여쓰기를 하는 경우가 많이 있습니다. 하지만 들여쓰기를 하더라도 함수가 너무 길어 어디까지가 if나 while같은 조건문이 작동하는지를 잘 몰라 주석을 닫는 태그에 적는 겁니다.
+물론, 이 방법을 사용하면 그대로 사용할 경우 괜찮기야 하겠지만 더 좋은 방법이 있을 것입니다. 대표적인 방법으로는 함수의 추상화가 있습니다.
+
+함수의 추상화는 여러가지의 작업을 하는 함수를 단계, 혹은 용도에 따라서 나누는 것입니다. 위의 경우를 살펴봅시다. 처음 함수의 경우 군대에 가는 조건을 확인하고
+어떤 군대를 가는지 확인하고, 해당 부대가 있는지를 확인한 뒤 군대에 보내는 크게 보면 3가지의 작업을 하고 있는 상태입니다. SRP(Single Responsibility Principle), 단위 책임 법칙을 따르지 않게 됩니다.
+
+이제 함수의 추상화를 진행해보겠습니다. 군대가는 조건을 선택하는 isPeopleQulifiedToMilitary(), 군대 병과에 따라서 나누는 chooseTypeAndGoMilitary(), 해당 병과의 부대가 존재하고 군대에 보내는 checkIsExistGo...() 각 함수가 하는 일이 많아야 2개에서 하나로
+좀 더 명확해졌습니다. 그리고 닫는 태그에 주석을 달 정도로 복잡하지도 않네요.
+
+### 누가 적었는지나 로그를 적어두는 주석
+
+```
+// 2022-08-11 이장훈이 추가함.
+```
+
+협업을 하는 과정이라면 모두 git을 이용하여 코드 관리를 했을 것입니다. 적어봐야 복잡하지기만 할 것입니다.
+
+### 사용하지 않는 코드
+
+```
+//else if(people.type === 'police'){}
+```
+
+코드를 사용하지 않을 경우 혹 추후 사용하지 않을까 코드를 지우지 않고 주석처리를 해두는 경우가 간혹 있을겁니다. 이 경우 협업하는 사람이 본다면 해당 코드를 지우기를 망설이게 됩니다. 심지어 저자도 이 사실을 잊고 이러한 상황이 계속 반복된다면
+침대 아래 하나 둘 씩 쌓이는 쓰레기처럼 쓰레기 코드(사용하지 않고 주석처리 되어있는 코드)가 점점 많아질 것입니다.
+
+### 나쁜 주석 결론
+
+결국은 애초에 좋은 코드였다면 많은 주석이 필요하지 않을 것입니다. 이를 해결하기 위해서 과연 함수의 추상화는 잘 진행되었는지와 해당 주석을 함수나 변수 이름을 통해 제 3자가 볼 경우 바로 이해할 수 있게 할 수 없을까?라는 생각을 바탕으로 읽기 쉬운 코드를 만드는 것이 중요합니다.
+
+### 그렇다면 좋은 주석은?
+
+나쁜 주석에 대해서 이야기했으니 이제 좋은 주석에 대해서 이야기해봅시다.
+
+```
+// Copyright (C) 2022.09.14 by JangHoon Company
+// 특정 사람이 뭔하는 병과의 원하는 부대로 갈 수 있는지를 판단하는 코드입니다.
+
+// 의경, 카투사 추가 예정
+
+const people = {
+  ...
+} // Example {gender: 'male', health: 'good', type: 'army', wantPlace: '33'}
+
+if(isPeopleQulifiedToMilitary(people)){
+  chooseTypeAndGoMilitary(people)
+}
+
+function isPeopleQulifiedToMilitary (people) {
+  if(people.health ==='good' && people.gender === 'man'){
+    return true;
+  }
+}
+
+function chooseTypeAndGoMilitary (people) {
+  switch(people.type){
+    case 'army':
+      checkIsExistGoArmy(people)
+    case 'navy':
+      checkIsExistGoNavy(people)
+    case 'airForce':
+      checkIsExistGoAirforce(people)
+  }
+}
+
+function checkIsExistGoArmy(people) {
+  if(army.isExist(people.wantPlace)){
+    goArmy{people};
+  } else {
+    throw '해당 육군 부대가 없습니다.'
+  }
+}
+
+function checkIsExistGoNavy(people) {
+  if(navy.isExist(people.wantPlace)){
+    goNavy{people};
+  } else {
+    throw '해당 해군 부대가 없습니다.'
+  }
+}
+
+function checkIsExistGoAirforce(people) {
+  if(airForce.isExist(people.wantPlace)){
+    goAirForce{people};
+  } else {
+    throw '해당 공군 부대가 없습니다.'
+  }
+}
+```
+
+### 법적인 주석
+
+// Copyright (C) 2022.09.14 by JangHoon Company
+
+### 전체적인 정보를 간단하게 설명하는 주석.
+
+// 특정 사람이 뭔하는 병과의 원하는 부대로 갈 수 있는지를 판단하는 코드입니다.
+
+물론 함수의 이름만으로 이를 설명할 수 있다면 가장 좋겠지만 그렇지 못한 경우 길지 않게 적는 경우도 괜찮다고 생각합니다.
+
+### ToDo 주석
+
+// 의경, 카투사 추가 예정
+
+앞으로의 계획을 적는 주석입니다.
+
+### 정보를 제공하는 주석
+
+// Example {gender: 'male', health: 'good', type: 'army', wantPlace: '33'}
+
+주석을 사용하지 않고 모든 정보를 알리기는 쉽지 않을 것입니다. 대표적인 예시로 변수나 객체의 형식 등이 있을 것입니다.
+
+## 결론
+
+결국은 주석을 사용하는 이유는 코드를 보다 쉽게 알아보기 위해서입니다. 알아보기 쉬운 코드의 기본은 간결하게 만든 코드를 기본으로 하지 주석으로인한 추가적인 설명을 바탕으로 하지 않습니다.
+이를 고려하면서 어떻게하면 주석을 잘 사용할 수 있을지에 대해서 모두 생각해봅시다.
+
+---
+
+참고 CleanCode. 로버트 C. 마틴 지음
